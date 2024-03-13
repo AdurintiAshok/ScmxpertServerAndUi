@@ -1,0 +1,46 @@
+.logincard
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(15, 222, 108);
+    border-radius: 10px;
+    padding: 2%;
+}
+.gradient-custom-2 {
+    /* fallback for old browsers */
+    background: #fccb90;
+    
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+    
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
+    }
+
+    .hello{
+      background: url('../../assets/transport.jpg');
+      background-size:cover;
+        border-radius:5px;
+    }
+    @media only screen and (max-width: 768px) {
+        .hello{
+            background: url('../../assets/transport.jpg');
+            background-size: cover;
+            border-radius:5px;
+            /* border: 2px solid #f5d1b0; */
+              border:none;
+            /* object-fit: contain; */
+    
+        }
+
+      }
+      .EyeIcon {
+        position: absolute;
+        top: 48%;
+        right:8%; /* Adjust this value for the desired spacing from the right side */
+        transform: translateY(-50%);
+        cursor: pointer;
+
+      }

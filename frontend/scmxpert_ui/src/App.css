@@ -1,0 +1,7 @@
+.App{
+  height: 100vh;
+  background-image: url('./assets/globe.jpeg');
+  background-size:cover;
+  overflow: auto;
+ opacity : (rgba(255,255,255,0.5), rgba(255,255,255,0.5));;
+}

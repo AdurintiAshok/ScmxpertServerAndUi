@@ -1,0 +1,14 @@
+.eyeiconinsignup{
+    position: absolute;
+    top: 59%;
+    right:8%; /* Adjust this value for the desired spacing from the right side */
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+.eyeiconinsignup1{
+    position: absolute;
+    top: 73%;
+    right:8%; /* Adjust this value for the desired spacing from the right side */
+    transform: translateY(-50%);
+    cursor: pointer;
+}

@@ -1,0 +1,153 @@
+.sidebar {
+    top: 0;
+    left: 0;
+    position: fixed;
+    height: 100%;
+    width: 260px;
+    background-color: #11101d
+}
+
+.sidebar .logo-details img {
+    line-height: 10px;
+    margin-left: 10px;
+}
+
+.project-name {
+    margin-left: 10px;
+    font-weight: bold;
+    color: aliceblue;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.nav-links {
+    height: 100%;
+    padding-top: 30px;
+    /* background-color: #11101d; */
+}
+
+.sidebar .nav-links li {
+    position: relative;
+    list-style: none;
+}
+
+.sidebar .nav-links li i {
+    text-align: center;
+    
+    height: 50px;
+    min-width: 78px;
+    line-height: 50px;
+    color: #fff;
+
+}
+
+.sidebar .nav-links li a {
+    text-decoration: none;
+}
+
+.sidebar .nav-links li a .link-name {
+    font-size: 18px;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: aliceblue;
+}
+a{
+    text-decoration: none;
+}
+.nav-links {
+    padding: 20px;
+}
+
+.logo-details {
+    padding: 20px;
+}
+
+.nav-links li {
+    margin-bottom: 15px;
+    /* Adjust the value as needed for the desired vertical space */
+}
+
+
+
+.sidebar.close .profile-details {
+    padding-left: 10px;
+    /* Adjust this padding as needed */
+    padding-right: 10px;
+    /* Adjust this padding as needed */
+    width: calc(100% - 90%);
+    /* Adjust width based on closed sidebar */
+}
+
+
+.home-section {
+    position: fixed;
+    background: #17243f;
+    width: 100%;
+    transition: all 0.5s ease;
+}
+
+.home-section .home-content {
+    height: 68px;
+    display: flex;
+    align-items: center;
+}
+
+.home-section .home-content .bx-menu {
+    margin: 0 15px;
+}
+
+.sidebar.close~.home-section {
+    left: 78px;
+    width: calc(100%-78px);
+
+}
+
+.sidebar.close {
+    width: 78px;
+}
+
+.sidebar.close i {
+    display: flex;
+    justify-content: center;
+}
+
+
+.sidebar.close {
+
+    ul li a {
+        display: flex;
+        justify-content: center;
+    }
+    .logo-details {
+        display: flex;
+        justify-content: center;
+    }
+    .endclass li a i {
+        position: absolute;
+        top: 50%;
+        transform: translate(18%, -100%);
+}
+    .home-section {
+        background: #E4E9F7;
+        width: calc(100%-260px);
+        transition: all 0.5s ease;
+        overflow: auto;
+    }
+
+   
+
+
+}
+
+.endclass {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    bottom: 0;
+}
+.welcomeText{
+    margin-left:'13px';
+    color: white;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    
+}
+
+  

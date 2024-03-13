@@ -1,0 +1,9 @@
+@media (min-width: 768px) {
+    .myship {
+        margin-left:100px; /* Ensure form starts after the sidebar */
+        overflow-x: auto;
+    }
+}
+.myship{
+    margin-bottom: 10px;
+}
