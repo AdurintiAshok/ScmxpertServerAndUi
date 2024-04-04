@@ -2,30 +2,39 @@ package com.exafluence.scmxpert.Model;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "UserRegistration")
+import java.time.Instant;
+
+@Document(collection = "Register")
 public class LoginModel {
-    private  String email;
-    private  String password;
-    public String getEmail() {
-        return email;
+    private  String userEmail;
+    private  String userPassword;
+    private  Instant expireDate;
+
+    public void setuserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
+    }
+
+    public void setExpireDate(Instant expireDate) {
+        this.expireDate = expireDate;
     }
 
     public LoginModel() {
-
+      
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getuserEmail() {
+        return userEmail;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String getUserPassword() {
+        return userPassword;
     }
 
-    public String getPassword() {
-        return password;
+    public Instant getExpireDate() {
+        return expireDate;
     }
-
-
-
 }

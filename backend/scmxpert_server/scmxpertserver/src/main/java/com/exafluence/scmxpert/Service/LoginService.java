@@ -14,9 +14,10 @@ public class LoginService {
 
     public boolean authenticate(String email, String password) {
         try {
-            LoginModel user = userRepository.findByEmail(email);
+            LoginModel user = userRepository.findByUserEmail(email);
             if (user != null) {
-                String storedPassword = user.getPassword();
+                System.out.println("I Am Ashok"+user);
+                String storedPassword = user.getUserPassword();
                 // Password does not match
                 return Objects.equals(password, storedPassword); // Authentication successful
             } else {
