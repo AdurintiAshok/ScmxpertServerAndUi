@@ -62,8 +62,8 @@ const Login = () => {
     else{
       try {
         let userData={
-          email:username,
-          password:password
+          userEmail:username,
+          userPassword:password
         }
         const response = await fetch('http://localhost:8080/login', {
             method: 'POST',
@@ -76,12 +76,8 @@ const Login = () => {
         const data = await response.json();
         console.log(data)
         if (response.status==200) {
-            // Handle successful login
-            alert(data);
             navigate('/newshipment')
         } else {
-          console.log(response)
-            // Handle login error
             console.error('Login failed:', data);
         }
     } catch (error) {

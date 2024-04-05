@@ -17,37 +17,9 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [confirmshowPassword, setConfirmshowPassword] = useState(false);
   const [isCheckboxAccepted, setIsCheckboxAccepted] = useState(false);
-  const [selectedRole, setSelectedRole] = useState(''); // State to store the selected role
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    try {
-      const formData={
-        username:username,
-        email:email,
-        password:password,
-        role:selectedRole
+  const [selectedRole, setSelectedRole] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-      }
-      const response = await fetch('http://localhost:8080/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to register');
-      }
-
-      alert('Registration successful!');
-      navigate('/login')
-    } catch (error) {
-      console.error('Registration error:', error);
-      alert('Registration failed. Please try again.');
-    }
-  };
 
   const handleRoleChange = (e) => {
     setSelectedRole(e.target.value); // Update the selected role state
@@ -72,7 +44,8 @@ const Signup = () => {
     return passwordRegex.test(password);
   };
 
-  const handleSignup = () => {
+  const handleSubmit = async (e) => {
+    
     setUsernameError("");
     setEmailError("");
     setPasswordError("");
@@ -118,11 +91,39 @@ const Signup = () => {
     ) {
       // Perform signup logic (e.g., API request)
       console.log("Signup successful!");
-      setEmail('');
-      setUsername('');
-      setPassword('');
-      setConfirmPassword('');
-      setIsCheckboxAccepted(false);
+      try {
+        const formData={
+          userName:username,
+          userEmail:email,
+          userPassword:password,
+          role:selectedRole
+  
+        }
+        const response = await fetch('http://localhost:8080/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to register');
+        }
+        console.log(response)
+  if(response.status==200){
+    navigate('/login')
+    setEmail('');
+    setUsername('');
+    setPassword('');
+    setConfirmPassword('');
+    setIsCheckboxAccepted(false);
+  }
+      } catch (error) {
+        console.error('Registration error:', error);
+        alert('Registration failed. Please try again.');
+      }
+
     }
   };
   const handleCheckboxChange = () => {
@@ -295,7 +296,7 @@ const Signup = () => {
           User
         </label>
       </div>
-      <div className="form-check form-check-inline">
+      <div className="form-check">
         <input
           className="form-check-input big"
           type="radio"
@@ -331,12 +332,16 @@ const Signup = () => {
                           </label>
                         </div>
                         <div className="text-center pt-1 pb-1">
-                          <button
-                            className="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                          
-                          >
-                            Sign Up
-                          </button>
+                        <button type="submit" className="btn btn-outline-primary btn-lg w-100 position-relative">
+      {isLoading && (
+        <div className="loader-container">
+          <div className="circular-loader"></div>
+        </div>
+      )}
+      <div className="button-content">
+        {!isLoading ? "Sign-UP" : ""}
+      </div>
+    </button>
                         </div>
                       </div>
                     </form>
