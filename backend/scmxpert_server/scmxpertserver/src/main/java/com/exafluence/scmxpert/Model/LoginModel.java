@@ -37,4 +37,8 @@ public class LoginModel {
     public Instant getExpireDate() {
         return expireDate;
     }
+
+    public static class User {
+
+    }
 }

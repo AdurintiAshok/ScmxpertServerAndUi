@@ -32,26 +32,37 @@ public class TokenService {
     public long getExpireDate() {
         return expireDate;
     }
-    public Optional<String> encrypt(LoginModel token) {
+    public Optional<String> encrypt(LoginModel loginmodel) {
         String payload;
         try {
-            token.setExpireDate(Instant.now().plus(Duration.ofHours(getExpireDate())));
-            payload = mapper().writeValueAsString(token);
+            loginmodel.setExpireDate(Instant.now().plus(Duration.ofSeconds(getExpireDate())));
+            payload = mapper().writeValueAsString(loginmodel);
             return Optional.of(Paseto.encrypt(key(), payload, footer));
-        } catch (PasetoException | JsonProcessingException e) {
-            return Optional.empty();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return Optional.of(e.getMessage());
+
+        } catch (PasetoException e) {
+            e.printStackTrace();
+            return Optional.of(e.getMessage());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return Optional.of(e.getMessage());
         }
     }
 
     public boolean decrypt(String token) {
         try {
             String payload = Paseto.decrypt(key(), token, footer);
-            System.out.println(payload);
             LoginModel loginmodel = mapper().readValue(payload,LoginModel.class);
             if (Instant.now().isAfter(loginmodel.getExpireDate())) {
                 return false;
             }
+            System.out.println("Decrypted Data"+payload);
             return true;
+        }catch (JsonProcessingException e) {
+            e.printStackTrace();
         } catch (PasetoException e) {
             e.printStackTrace();
         } catch (Exception e) {

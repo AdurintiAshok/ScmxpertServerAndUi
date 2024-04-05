@@ -28,5 +28,21 @@ public class LoginService {
             return false; // Error occurred during authentication
         }
     }
+    public  boolean Verify(String email) {
+        try {
+            LoginModel user = userRepository.findByUserEmail(email);
+            if (user != null) {
+                String useremail = user.getuserEmail();
+                // Password does not match
+                return Objects.equals(email, useremail); // Authentication successful
+            } else {
+                return false; // User not found
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Error occurred during authentication
+        }
+    }
+
 }
 

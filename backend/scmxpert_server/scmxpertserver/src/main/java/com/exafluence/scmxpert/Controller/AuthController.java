@@ -1,29 +1,28 @@
 package com.exafluence.scmxpert.Controller;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
+import com.exafluence.scmxpert.Model.NewShipMent;
+import com.exafluence.scmxpert.Respository.RegistrationRepo;
+import com.exafluence.scmxpert.Respository.ShipmentRepository;
 import com.exafluence.scmxpert.Respository.UserRepository;
+import com.exafluence.scmxpert.Service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.exafluence.scmxpert.Model.LoginModel;
 import com.exafluence.scmxpert.Model.RegistrationModel;
-import com.exafluence.scmxpert.Respository.RegistrationRepo;
-import com.exafluence.scmxpert.Service.AppToken;
 import com.exafluence.scmxpert.Service.LoginService;
-import com.exafluence.scmxpert.Service.TokenService;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletResponse;
 @RestController
 public class AuthController {
+
     @Autowired
     RegistrationRepo poster;
     @Autowired
@@ -73,7 +72,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
         }
     }
-    public Boolean TestToken(String authHeader){
+    public boolean TestToken(String authHeader){
         boolean status=service.decrypt(authHeader);
         return  status;
     }
@@ -82,7 +81,7 @@ public class AuthController {
     public boolean ProfileData(@RequestHeader("Authorization") String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
-            boolean status = TestToken(token);
+           boolean status = TestToken(token);
             return status;
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No bearer token found in the request header").hasBody();
