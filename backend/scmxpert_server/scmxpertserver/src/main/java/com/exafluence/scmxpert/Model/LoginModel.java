@@ -9,6 +9,7 @@ public class LoginModel {
     private  String userEmail;
     private  String userPassword;
     private  Instant expireDate;
+    private  String token;
 
     public void setuserEmail(String userEmail) {
         this.userEmail = userEmail;
@@ -21,7 +22,9 @@ public class LoginModel {
     public void setExpireDate(Instant expireDate) {
         this.expireDate = expireDate;
     }
-
+    public void  setResetToken(String token){
+        this.token=token;
+    }
     public LoginModel() {
       
     }
@@ -37,6 +40,8 @@ public class LoginModel {
     public Instant getExpireDate() {
         return expireDate;
     }
+
+
 
     public static class User {
 

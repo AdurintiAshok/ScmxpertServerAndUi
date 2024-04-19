@@ -21,6 +21,15 @@ public class NewShipMent {
     private String deliveryNumber;
     private String batchId;
     private String shipmentDescription;
+    private  String userEmail;
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
 
     public String getShipmentNumber() {
         return shipmentNumber;

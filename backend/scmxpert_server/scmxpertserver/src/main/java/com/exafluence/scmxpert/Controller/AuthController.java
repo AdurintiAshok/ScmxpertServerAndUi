@@ -1,19 +1,18 @@
 package com.exafluence.scmxpert.Controller;
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Optional;
+import java.util.List;
 
 import com.exafluence.scmxpert.Model.NewShipMent;
+import com.exafluence.scmxpert.Model.User;
 import com.exafluence.scmxpert.Respository.RegistrationRepo;
-import com.exafluence.scmxpert.Respository.ShipmentRepository;
 import com.exafluence.scmxpert.Respository.UserRepository;
+import com.exafluence.scmxpert.Service.TokenBlacklistService;
 import com.exafluence.scmxpert.Service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import com.exafluence.scmxpert.Model.LoginModel;
 import com.exafluence.scmxpert.Model.RegistrationModel;
@@ -33,7 +32,8 @@ public class AuthController {
     private UserRepository loginRepo;
     @Autowired
     private TokenService service;
-
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;
     @Hidden
     @RequestMapping(value = "/")
     public void redirect(HttpServletResponse response) throws IOException {
@@ -66,7 +66,7 @@ public class AuthController {
 
         if (isAuthenticated) {
             LoginModel user = loginRepo.findByUserEmail(loginModelRequest.getuserEmail());
-        	Optional<String> name= service.encrypt(user);
+        	String name= service.encrypt(user);
             return ResponseEntity.ok().body(name);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
@@ -89,5 +89,10 @@ public class AuthController {
        
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Object> logout(@RequestHeader("Authorization") String token) {
+        tokenBlacklistService.addToBlacklist(token);
+        return ResponseEntity.ok().body("User Logged Out Successfully");
+    }
 
 }
