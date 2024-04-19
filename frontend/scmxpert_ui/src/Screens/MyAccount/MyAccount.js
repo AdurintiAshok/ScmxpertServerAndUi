@@ -1,4 +1,4 @@
-import React,{useState}from 'react'
+import React,{useEffect, useState}from 'react'
 import ExfLogo from '../../assets/exf-png.png'
 import './MyAccount.css'
 import { IoIosClose } from "react-icons/io";
@@ -6,8 +6,37 @@ import { CiMenuBurger } from "react-icons/ci";
 import Metrics from '../Metrics/Metrics';
 import Sidebar from '../../Components/Sidebar';
 import User from '../../assets/User.jpg'
+import { useNavigate } from 'react-router-dom';
 const MyAccount = () => {
-    
+  const [email,setEmail]=useState('');
+const navigate=useNavigate();
+  useEffect(()=>{
+    checkTokenValidity();
+  },[]);
+  const checkTokenValidity = async () => {
+    const token= localStorage.getItem('TokenValue');
+   console.log(token)
+    try {
+      const response = await fetch('http://localhost:8080/profile', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+          // Replace yourAuthToken with the actual authentication token
+        }
+      });
+      const data = await response.json();
+      console.log(data)
+      if (!data) {
+        // Token is expired or not validated
+        // Perform logout action
+        console.log("Token is expired or not validated. Logging out...");
+        navigate('/login')
+        // Perform logout action here, such as clearing local storage, redirecting to login page, etc.
+      }
+    } catch (error) {
+      console.error('Error checking token validity:', error);
+    }
+  };
   return (
     <div style={{overflowX:'hidden',background:'#E4E9F7',height:'100%'}}>
     <Sidebar/>
@@ -29,7 +58,7 @@ const MyAccount = () => {
               <div className="flex-grow-1 ms-md-3">
                 <h5 className="mb-1">Ashok Adurinti</h5>
                 <p className="mb-2 pb-1" style={{ color: '#2b2a2a' }}>
-                  ashok@gmail.com
+                  {email}
                 </p>
                 {/* <div className="d-md-flex justify-content-center d-lg-block">
                   <button type="button" className="btn btn-outline-primary me-1 mb-2 mb-md-0">

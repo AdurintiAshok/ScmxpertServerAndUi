@@ -1,6 +1,10 @@
-@media (min-width: 768px) {
+@media only screen and (max-width: 768px) {
     .myship {
         margin-left:100px; /* Ensure form starts after the sidebar */
         overflow-x: auto;
+    }
+    .dataship{
+      
+        overflow-x: auto; 
     }
 }

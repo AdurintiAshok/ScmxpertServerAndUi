@@ -1,15 +1,29 @@
 import React, { useState } from "react";
 import "../DataStream/DataStream.css";
+import "./MyShipment.css"
 import Sidebar from "../../Components/Sidebar";
+import { useNavigate } from "react-router-dom";
 const MyShipment = () => {
   const [shipments,setShipMents]=React.useState([]);
   const [deviceId,setDeviceId]=useState('')
   const [filteredOptions,setFilteredOptions]=useState([]);
+  const [shipmentNumberError, setShipmentNumberError] = useState("");
+  const navigate=useNavigate();
   React.useEffect(()=>{
     async function fetchShipments() {
+      const token=localStorage.getItem('TokenValue')
       try {
-        const response = await fetch('http://localhost:8080/shipments');
-        
+        const response = await fetch('http://localhost:8080/shipments',    {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+
+            // Replace yourAuthToken with the actual authentication token
+          },
+          body: JSON.stringify({ userEmail: localStorage.getItem('UserName') })
+        });
+        console.log(response)
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -26,9 +40,32 @@ const MyShipment = () => {
     
     // Call the fetchShipments function to initiate the fetch request
     fetchShipments();
-    
+    checkTokenValidity();
   },[])
-
+  const checkTokenValidity = async () => {
+    const token= localStorage.getItem('TokenValue');
+   console.log(token)
+    try {
+      const response = await fetch('http://localhost:8080/profile', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+          // Replace yourAuthToken with the actual authentication token
+        }
+      });
+      const data = await response.json();
+      console.log(data)
+      if (!data) {
+        // Token is expired or not validated
+        // Perform logout action
+        console.log("Token is expired or not validated. Logging out...");
+        navigate('/login')
+        // Perform logout action here, such as clearing local storage, redirecting to login page, etc.
+      }
+    } catch (error) {
+      console.error('Error checking token validity:', error);
+    }
+  };
   const onDeviceIdSelection=()=>{
     const filterResult = shipments.filter((item) => {
       return item.deviceId === deviceId;
@@ -55,9 +92,9 @@ const MyShipment = () => {
   };
   
   return (
-    <div style={{ overflowX: "hidden", background: "#E4E9F7", height: "100%" ,width:'100%'}}>
+    <div style={{ overflowX: "hidden", background: "#E4E9F7", height: "100%" ,width:'100%'}} >
       <Sidebar />
-<div className="myship">
+<div >
 <div class="container" style={{marginTop:'2%'}}>
       <form>
       <div className="row mb-4" style={{ background: '#f3eae8', padding: '30px' }}>
@@ -76,8 +113,8 @@ const MyShipment = () => {
         </div>
       </div>
     </div>
-  <div class="row" >
-  <table className="table table-striped mb-2" >
+  <div class="row tableship" >
+  <table className="table table-striped mb-2 " >
   <thead>
     <tr>
       <th scope="col">Shipment Number</th>

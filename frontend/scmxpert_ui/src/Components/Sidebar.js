@@ -4,7 +4,9 @@ import ExfLogo from "../assets/exf-png.png";
 import { IoIosClose } from "react-icons/io";
 import { CiMenuBurger } from "react-icons/ci";
 import { TbMenuDeep } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 const Sidebar = () => {
+  const navigate=useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleMenuToggle = () => {
@@ -18,47 +20,49 @@ const Sidebar = () => {
   return (
   <div>
       <div className="d-none d-md-block" >
-      <div className={`sidebar ${isMenuOpen ? "" : "close"}`}>
+      <div className={`sidebar ${isMenuOpen ? "" : "close"}`} >
         <div className="logo-details">
           <img src={ExfLogo} style={{ width: "40px", height: "40px" }} />
           {isMenuOpen && <span className="project-name">Exafluence</span>}
         </div>
         <ul className="nav-links ">
           <li>
-          <a href="dash">
+          <a href="dash" title="dashboard">
               <i class="bx bxs-dashboard"></i>
               {isMenuOpen && <span className="link-name">DashBord</span>}
             </a>
 
           </li>
           <li>
-            <a href="myaccount">
+            <a href="myaccount" title="myaccount">
               <i class="bx bxs-user-pin"></i>
               {isMenuOpen && <span className="link-name">My Account</span>}
             </a>
           </li>
           <li>
-            <a href="myshipment">
+            <a href="myshipment" title="myshipment">
               <i class="bx bxs-ship"></i>
               {isMenuOpen && <span className="link-name">My Shipment</span>}
             </a>
           </li>
         
           <li>
-            <a href="newshipment">
+            <a href="newshipment" title="newshipment">
               <i class="bx bxs-train bx-rotate-90"></i>
               {isMenuOpen && <span className="link-name">New Shipment</span>}
             </a>
           </li>
           <li>
-            <a href="datastream">
+            <a href="datastream" title="datastream">
               <i class="bx bx-data"></i>
               {isMenuOpen && <span className="link-name">Device Stream</span>}
             </a>
           </li>
           <div className="endclass">
             <li>
-              <a href="#">
+              <a   onClick={()=>{
+                navigate('/login')
+              }} title="logout">
                 <i class="bx bx-log-out-circle"></i>
                 {isMenuOpen && <span className="link-name">Logout</span>}
               </a>
@@ -83,7 +87,7 @@ const Sidebar = () => {
         </div>
       </div>
     </div>
-    <div className="d-md-none">
+    <div className="d-md-none" >
     
         <div 
           style={{height:'60px',    background: "#17243f" }} className="d-flex flex-row  align-items-center"
@@ -138,8 +142,10 @@ const Sidebar = () => {
             </a>
           </li>
           <div className="endclass">
-            <li>
-              <a href="#" className="anchor" style={{color:'black'}}>
+            <li  onClick={()=>{
+                navigate('/login')
+              }}>
+              <a className="anchor" style={{color:'black'}} >
                 <i class="bx bx-log-out-circle"></i>
 <span className="link-name ms-2">Logout</span>
               </a>

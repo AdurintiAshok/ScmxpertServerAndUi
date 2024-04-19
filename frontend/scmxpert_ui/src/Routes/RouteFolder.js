@@ -12,6 +12,7 @@ import MyAccount from '../Screens/MyAccount/MyAccount'
 import NewShipment from '../Screens/NewShipment/NewShipment'
 import MyShipment from '../Screens/MyShipment/MyShipment'
 import DataStream from '../Screens/DataStream/DataStream'
+import PasswordResetForm from '../Screens/PasswordUpdate/PasswordResetForm'
 const RouteFolder = () => {
   const routes = [
     { path: '/', element: <Login /> },
@@ -25,6 +26,7 @@ const RouteFolder = () => {
     { path: '/myshipment', element: <MyShipment /> },
     { path: '/datastream', element: <DataStream /> },
     { path: '*', element: <EmptyRoute /> },
+    { path: '/reset-password', element: <PasswordResetForm /> },
     
 
   ];

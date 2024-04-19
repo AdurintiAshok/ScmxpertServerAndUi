@@ -18,8 +18,46 @@ const Signup = () => {
   const [confirmshowPassword, setConfirmshowPassword] = useState(false);
   const [isCheckboxAccepted, setIsCheckboxAccepted] = useState(false);
   const [selectedRole, setSelectedRole] = useState('');
+  const [selectedRoleError, setSelectedRoleError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const handleSubmit = async () => {
+   
+    setIsLoading(true)
+    try {
+      const formData={
+        userName:username,
+        userEmail:email,
+        userPassword:password,
+        role:selectedRole
 
+      }
+      console.log(formData)
+      const response = await fetch('http://localhost:8080/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to register');
+      }
+      console.log(response)
+      setIsLoading(false)
+      alert('Registration successful!');
+      navigate('/login')
+      setEmail('');
+      setUsername('');
+      setPassword('');
+      setConfirmPassword('');
+      setIsCheckboxAccepted(false);
+    } catch (error) {
+      setIsLoading(false)
+      console.error('Registration error:', error);
+      alert('Registration failed. Please try again.');
+    }
+  };
 
   const handleRoleChange = (e) => {
     setSelectedRole(e.target.value); // Update the selected role state
@@ -44,86 +82,69 @@ const Signup = () => {
     return passwordRegex.test(password);
   };
 
-  const handleSubmit = async (e) => {
-    
+  const handleSignup = (e) => {
+    e.preventDefault();
     setUsernameError("");
     setEmailError("");
     setPasswordError("");
     setConfirmPasswordError("");
+    setSelectedRoleError("")
     // Validate username
     if (!username.trim()) {
       setUsernameError("Username is required.");
+      return;
     }
 
     // Validate email
     if (!email.trim()) {
       setEmailError("Email is required.");
+      return;
     } else if (!isValidEmail(email)) {
       setEmailError("Please enter a valid email address.");
+      return;
     }
 
     // Validate password
     if (!password.trim()) {
       setPasswordError("Password is required.");
+      return;
     } else if (!isSecurePassword(password)) {
       setPasswordError(
         "Password should be at least 8 characters, include both uppercase and lowercase letters, and have at least one number or special character."
       );
+      return;
     }
 
     // Validate confirm password
     if (!confirmPassword.trim()) {
       setConfirmPasswordError("Confirm Password is required.");
+      return;
     } else if (confirmPassword !== password) {
       setConfirmPasswordError("Passwords do not match.");
+      return;
+    }
+    else if(
+      !selectedRole.trim()
+    ){
+      setSelectedRoleError("Select The Role");
+      return;
     }
     if (!isCheckboxAccepted) {
       alert("Please accept the terms and conditions.");
       return;
     }
 
-    // If there are no errors, perform signup logic
     if (
       !usernameError &&
       !emailError &&
       !passwordError &&
-      !confirmPasswordError
+      !confirmPasswordError &&
+      !selectedRoleError
     ) {
       // Perform signup logic (e.g., API request)
       console.log("Signup successful!");
-      try {
-        const formData={
-          userName:username,
-          userEmail:email,
-          userPassword:password,
-          role:selectedRole
-  
-        }
-        const response = await fetch('http://localhost:8080/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(formData)
-        });
-  
-        if (!response.ok) {
-          throw new Error('Failed to register');
-        }
-        console.log(response)
-  if(response.status==200){
-    navigate('/login')
-    setEmail('');
-    setUsername('');
-    setPassword('');
-    setConfirmPassword('');
-    setIsCheckboxAccepted(false);
-  }
-      } catch (error) {
-        console.error('Registration error:', error);
-        alert('Registration failed. Please try again.');
-      }
-
+      handleSubmit()
+   
     }
   };
   const handleCheckboxChange = () => {
@@ -176,9 +197,9 @@ const Signup = () => {
   return (
     <section
       class="h-100 gradient-form"
-      style={{ backgroundColor: "#eee;", overflow: "auto" }}
+      style={{  background: "#E4E9F7", overflow: "auto" }}
     >
-      <div class="container py-5 ">
+      <div class="container-fluid  h-100" style={{marginBottom:'30px',marginTop:'30px'}}>
         <div class="row d-flex justify-content-center align-items-center h-100">
           <div class="col-xl-10">
             <div class="card  text-black">
@@ -194,7 +215,7 @@ const Signup = () => {
                       />
                       <h3 style={{ fontFamily: "Fantasy" }}>SCMXPertLite</h3>
                     </div>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSignup}>
                       <p>SIGNUP</p>
 
                       <div class="form-outline mb-4">
@@ -286,7 +307,7 @@ const Signup = () => {
         <input
           className="form-check-input"
           type="radio"
-          name="inlineRadioOptions"
+         
           id="inlineRadio1"
           value="User"
           checked={selectedRole === 'User'} // Check if selectedRole is 'User'
@@ -296,11 +317,11 @@ const Signup = () => {
           User
         </label>
       </div>
-      <div className="form-check">
+      <div className="form-check form-check-inline">
         <input
           className="form-check-input big"
           type="radio"
-          name="inlineRadioOptions"
+         
           id="inlineRadio2"
           value="Admin"
           checked={selectedRole === 'Admin'} // Check if selectedRole is 'Admin'
@@ -309,7 +330,11 @@ const Signup = () => {
         <label className="form-check-label" htmlFor="inlineRadio2">
           Admin
         </label>
+
       </div>
+      {selectedRoleError && (
+                          <p style={{ color: "red" }}>{selectedRoleError}</p>
+                        )}
                       </div>
 
 

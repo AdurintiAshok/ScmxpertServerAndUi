@@ -5,7 +5,7 @@ import ExfLogo from "../../assets/Exf.jpeg";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
-
+import user from '../../assets/User.jpg'
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -14,7 +14,8 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isCaptchaValid, setIsCaptchaValid] = useState(false);
-
+  const [errorMessage,setErrorMessage]=useState("")
+  const [isLoading, setIsLoading] = useState(false);
   const handleRecaptchaChange = (value) => {
    if(value)
    {
@@ -47,17 +48,16 @@ const Login = () => {
       setUsernameError("Username is required.");
     } else if (!isValidEmail(username)) {
       setUsernameError("Please enter a valid email address.");
+      return;
     }
 
     if (!password.trim()) {
       setPasswordError("Password is required.");
-    } else if (!isSecurePassword(password)) {
-      setPasswordError(
-        "Password should be at least 8 characters, include both uppercase and lowercase letters, and have at least one number or special character."
-      );
-    }
+      return;
+    } 
     if(!isCaptchaValid){
-     alert('Please Valid Captcha')
+     alert('Please Valid Captcha');
+     return;
     }
     else{
       try {
@@ -72,13 +72,14 @@ const Login = () => {
             },
             body: JSON.stringify(userData)
         });
-   
-        const data = await response.json();
-        console.log(data)
-        if (response.status==200) {
-            navigate('/newshipment')
-        } else {
-            console.error('Login failed:', data);
+        if (response.status==200){
+        const token=await response.text();
+        localStorage.setItem('TokenValue',token);
+        localStorage.setItem('UserName',username)
+        navigate('/newshipment')
+        } else if(response.status==401){
+          const errorMessage=await response.text();
+          setErrorMessage(errorMessage);
         }
     } catch (error) {
         // Handle network error
@@ -89,8 +90,6 @@ const Login = () => {
   const handleUsernameChange = (e) => {
     const value = e.target.value;
     setUsername(value);
-
-    // Validate username
     if (!value.trim()) {
       setUsernameError("Email is required.");
     } else {
@@ -113,10 +112,10 @@ const Login = () => {
   }
   return (
     <section
-      class="h-100 gradient-form"
-      style={{ backgroundColor: "#eee;", overflow: "auto" }}
+      class="h-100 gradient-form "
+      style={{  background: "#E4E9F7", overflow: "auto" }}
     >
-      <div class="container py-5 h-100">
+      <div class="container-fluid py-4 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
           <div class="col-xl-10">
             <div class="card  text-black">
@@ -131,6 +130,9 @@ const Login = () => {
                         style={{ width: "40px", height: "40px" }}
                       />
                       <h3 style={{ fontFamily: "Fantasy" }}>SCMXPertLite</h3>
+                      {errorMessage && (
+          <p style={{ color: "red" }}>{errorMessage}</p>
+        )}
                     </div>
                     <form>
                       <p>Please login to your account</p>
@@ -197,15 +199,21 @@ const Login = () => {
 
                       <div className="col-md-12 mx-auto">
                         <div className="text-center pt-1 pb-1">
-                          <button
-                            className="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
+                        
+                          <button  className="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                             type="button"
                             onClick={() => {
                               handleLogin();
-                            }}
-                          >
-                            Log in
-                          </button>
+                            }}>
+      {isLoading && (
+        <div className="loader-container">
+          <div className="circular-loader"></div>
+        </div>
+      )}
+      <div className="button-content">
+        {!isLoading ? "Login" : ""}
+      </div>
+    </button>
                         </div>
 
                         <div class="d-flex align-items-center justify-content-center pb-4">

@@ -2,9 +2,14 @@ import React,{useState}from 'react'
 import "../Login/Login.css";
 import { Button } from 'bootstrap';
 import ExfLogo from '../../assets/Exf.jpeg'
+import { useNavigate } from 'react-router-dom';
+import './ForgotPassword.css'
 const ForgetPassword = (params) => {
+  const navigate=useNavigate();
   const [username, setUsername] = useState("");
   const [usernameError, setUsernameError] = useState("");
+  
+  const [isLoading, setIsLoading] = useState(false);
   const handleUsernameChange = (e) => {
     const value = e.target.value;
     setUsername(value);
@@ -27,10 +32,34 @@ const ForgetPassword = (params) => {
       setUsernameError('Please enter a valid email address.');
     }
     if (!usernameError) {
-      setUsername('');
-      console.log('ResetPassword successful!');
+     apiCall();
     }
   }
+  async function   apiCall (){
+    setIsLoading(true)
+    try {
+      const response = await fetch('http://localhost:8080/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userEmail: username }),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage || 'Failed to reset password');
+      }
+      const data = await response.text();
+      setIsLoading(false)
+      navigate('/login')
+    } catch (error) {
+      setUsernameError(error.message || 'Failed to reset password');
+    }
+
+    setIsLoading(false);
+  };
+  
   return (
 
 <section
@@ -42,7 +71,7 @@ const ForgetPassword = (params) => {
           <div class="col-xl-10">
             <div class="card  text-black">
               <div class="row g-0">
-                <div class="col-lg-6  d-flex align-items-center hello"></div>
+                <div class="col-lg-5  d-flex align-items-center firstdiv"></div>
                 <div class="col-lg-6">
     <div class="card-body p-md-5 mx-md-4">
       <div class="text-center">
@@ -65,13 +94,19 @@ const ForgetPassword = (params) => {
         </div>
         <div className="col-md-6 mx-auto">
           <div className="text-center pt-1 pb-1">
-            <button
-              className="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-              type="button"
-              onClick={()=>{resetPassword()}}
-            >
-              Reset Password
-            </button>
+          
+            <button onClick={()=>{
+            resetPassword()
+          }} className="btn btn-outline-primary btn-lg w-100 position-relative" type='button'>
+        {isLoading && (
+          <div className="loader-container">
+            <div className="circular-loader"></div>
+          </div>
+        )}
+        <div className="button-content">
+          {!isLoading ? "Create Shipment" : ""}
+        </div>
+      </button>
           </div>
         </div>
       </form>

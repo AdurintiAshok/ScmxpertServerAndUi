@@ -1,7 +1,7 @@
 .App{
   height: 100vh;
-  background-image: url('./assets/globe.jpeg');
-  background-size:cover;
+  /* background-image: url('./assets/User.jpg');
+  background-size:cover; */
+  background: "#E4E9F7";
   overflow: auto;
- opacity : (rgba(255,255,255,0.5), rgba(255,255,255,0.5));;
 }

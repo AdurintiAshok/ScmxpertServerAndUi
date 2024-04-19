@@ -1,19 +1,36 @@
 import React, { useState } from "react";
-import "../DataStream/DataStream.css";
+import "./DataStream.css";
 import Sidebar from "../../Components/Sidebar";
+import { useNavigate } from "react-router-dom";
 const DataStream = () => {
   const [shipments,setShipMents]=React.useState([]);
+  const navigate=useNavigate();
   const [deviceId,setDeviceId]=useState('')
   const [filteredOptions,setFilteredOptions]=useState([]);
+  const [allUsers,setAllUsers]=useState([]);
+  const [userData,setUserData]=useState([])
   React.useEffect(()=>{
     async function fetchShipments() {
+      const token=localStorage.getItem('TokenValue')
+      console.log("Hello",userData)
       try {
-        const response = await fetch('http://localhost:8080/shipments');
+
+        console.log("UserDta",userData)
+        const response = await fetch('http://localhost:8080/shipments', 
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+            // Replace yourAuthToken with the actual authentication token
+          },
+          body: JSON.stringify({ userEmail: userData?.userEmail,
+          role:userData?.role })
+        });
         
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          navigate('/login')
         }
-    
         const data = await response.json();
         setShipMents(data)
         console.log('Shipments:', data);
@@ -23,12 +40,65 @@ const DataStream = () => {
         throw error; // Rethrow the error if needed
       }
     }
-    
-    // Call the fetchShipments function to initiate the fetch request
+    async function getAllUsers(){
+      const token=localStorage.getItem('TokenValue')
+      try {
+        const response = await fetch('http://localhost:8080/users', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+            // Replace yourAuthToken with the actual authentication token
+          }
+        });
+        if(response.status==200){
+          const data = await response.json();
+          console.log("allUsers",data)
+          setAllUsers(data);
+        }
+      } catch (error) {
+        console.error('Error checking token validity:', error);
+      }
+    }
+    async function filterUsers(){
+      const userEmail= localStorage.getItem('UserName');
+      console.log(userEmail)
+      const matchedUser = allUsers.find(user => user.userEmail === userEmail);
+      console.log("macthed",allUsers)
+      setUserData(matchedUser)
+      
+    }
+    getAllUsers();
+    filterUsers();
     fetchShipments();
-    
   },[])
 
+  function filterUsers(){
+
+  }
+  const checkTokenValidity = async () => {
+    const token= localStorage.getItem('TokenValue');
+   console.log(token)
+    try {
+      const response = await fetch('http://localhost:8080/profile', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+          // Replace yourAuthToken with the actual authentication token
+        }
+      });
+      const data = await response.json();
+      console.log(data)
+      if (!data) {
+        // Token is expired or not validated
+        // Perform logout action
+        console.log("Token is expired or not validated. Logging out...");
+        navigate('/login')
+        // Perform logout action here, such as clearing local storage, redirecting to login page, etc.
+      }
+    } catch (error) {
+      console.error('Error checking token validity:', error);
+    }
+  };
   const onDeviceIdSelection=()=>{
     const filterResult = shipments.filter((item) => {
       return item.deviceId === deviceId;
@@ -57,7 +127,7 @@ const DataStream = () => {
   return (
     <div style={{ overflowX: "hidden", background: "#E4E9F7", height: "100%" ,width:'100%'}}>
       <Sidebar />
-<div className="myship">
+<div>
 <div class="container" style={{marginTop:'2%'}}>
       <form>
       <div className="row mb-4" style={{ background: '#f3eae8', padding: '30px' }}>
@@ -76,7 +146,7 @@ const DataStream = () => {
         </div>
       </div>
     </div>
-  <div class="row" >
+  <div class="row dataship" >
   <table className="table table-striped mb-2" >
   <thead>
     <tr>
