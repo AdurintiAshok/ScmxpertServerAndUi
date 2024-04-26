@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ExfLogo from '../../assets/Exf.jpeg'
 import user from '../../assets/transport.jpg'
 import './PasswordResetForm.css'
+import { KeyData } from '../../ENDPOINTS/EndPoint';
 const PasswordResetForm = () => {
     const navigate=useNavigate();
   const [newPassword, setNewPassword] = useState('');
@@ -20,7 +21,7 @@ const PasswordResetForm = () => {
 
     try {
       const token = new URLSearchParams(window.location.search).get('token');
-      const response = await fetch(`http://localhost:8080/reset-password?token=${token}`, {
+      const response = await fetch(`${KeyData.api_end_point}/reset-password?token=${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +100,7 @@ setConfirmNewPassword(e.target.value)
           </div>
         )}
         <div className="button-content">
-          {!isLoading ? "Create Shipment" : ""}
+          {!isLoading ? "Update Password" : ""}
         </div>
       </button>
                             </div>

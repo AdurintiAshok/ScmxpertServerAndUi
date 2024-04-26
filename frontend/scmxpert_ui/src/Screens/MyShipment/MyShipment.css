@@ -2,7 +2,28 @@
     .tableship{
        padding-left: 10px;
        padding-right: 10px;
-       overflow-x: auto;
+    
+    
+    }
+    .hii{
+      overflow: auto;
     }
 
   }
+  .tableship{
+  
+}
+
+.tableship::-webkit-scrollbar { 
+   display: none;  /* Safari and Chrome */
+}
+.hii::-webkit-scrollbar { 
+   display: none;  /* Safari and Chrome */
+}
+
+ 
+ .pagination-container {
+   display: flex;
+   justify-content: flex-end;
+ }
+ 

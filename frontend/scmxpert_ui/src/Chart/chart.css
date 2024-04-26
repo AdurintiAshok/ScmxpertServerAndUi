@@ -1,43 +1,7 @@
-#content{
-    text-align: center;
-    display: grid;
-    grid-template-columns:repeat(4,1fr);
-    grid-template-rows: repeat(4,minmax(150px,auto));
-    grid-gap: 10px;
-    margin: 0 auto;
-    color: azure;
-    max-width: 960px;
-    grid-template-areas: "one one one one"
-    "two two three three"
-    "four four four four"
-    "five five five five";
-    background-color: blanchedalmond;
-}
-#content div{
-    padding: 20px;
-    background-color: rgba(42, 228, 235, 0.711);
-}
-#content div:nth-child(even){
-    background-color: black;
-}
-.one{
-    grid-area: one;
- 
-}
-.two{
-    grid-area: two;
-}
-.three{
-   grid-area: three;
-}
-.four{
-    grid-area: four;
-}
-@media screen and (min-width:760px) {
-    #content{
-        background-color: rgb(15, 98, 161);
+
+    @media only screen and (min-width: 768px) {
+      .maindiv {
+        margin: 120px;
+      }
     }
-    p{
-        color: rgb(192, 66, 66);
-    }
-}
+    

@@ -7,17 +7,57 @@ import Metrics from '../Metrics/Metrics';
 import Sidebar from '../../Components/Sidebar';
 import User from '../../assets/User.jpg'
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer,toast } from 'react-toastify';
+import AuthFunction from '../../Auth/Auth';
+import { KeyData } from '../../ENDPOINTS/EndPoint';
 const MyAccount = () => {
   const [email,setEmail]=useState('');
+  const [allUsers,setAllUsers]=useState([]);
+  const [userData,setUserData]=useState([])
 const navigate=useNavigate();
   useEffect(()=>{
-    checkTokenValidity();
+    async function getAllUsers(){
+      const token=localStorage.getItem('TokenValue')
+      try {
+        const response = await fetch(`${KeyData.api_end_point}/users`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+            // Replace yourAuthToken with the actual authentication token
+          }
+        });
+        if(response.status==200){
+          const data = await response.json();
+          console.log("allUsers",data)
+          setAllUsers(data);
+          filterUsers(data);
+        }
+      } catch (error) {
+        console.error('Error checking token validity:', error);
+      }
+    }
+    async function filterUsers(allUsers){
+      const userEmail= localStorage.getItem('UserName');
+      console.log(userEmail)
+      const matchedUser = allUsers.find(user => user.userEmail === userEmail);
+      console.log("macthed",allUsers)
+      setUserData(matchedUser)
+      
+    }
+    const isAuthenticated =AuthFunction();
+    if (!isAuthenticated) {
+      navigate('/login');
+    } else {
+      getAllUsers();
+      checkTokenValidity();
+    }
+  
   },[]);
   const checkTokenValidity = async () => {
     const token= localStorage.getItem('TokenValue');
-   console.log(token)
+    console.log("Hey TOk",token)
     try {
-      const response = await fetch('http://localhost:8080/profile', {
+      const response = await fetch(`${KeyData.api_end_point}/profile`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -30,8 +70,13 @@ const navigate=useNavigate();
         // Token is expired or not validated
         // Perform logout action
         console.log("Token is expired or not validated. Logging out...");
-        navigate('/login')
-        // Perform logout action here, such as clearing local storage, redirecting to login page, etc.
+        toast.error("Token Has Expired Logging Out.........", { toastId: 'success1' });
+
+        // Set timeout to navigate to login page after 3 seconds
+        const timeoutId = setTimeout(() => {
+          navigate('/login');
+        }, 3000); // Timeout in milliseconds (3 seconds)
+
       }
     } catch (error) {
       console.error('Error checking token validity:', error);
@@ -39,6 +84,7 @@ const navigate=useNavigate();
   };
   return (
     <div style={{overflowX:'hidden',background:'#E4E9F7',height:'100%'}}>
+          <ToastContainer/>
     <Sidebar/>
     <section className="vh-100 " style={{ overflow: 'hidden' }}>
   <div className="container py-3">
@@ -56,10 +102,11 @@ const navigate=useNavigate();
                 />
               </div>
               <div className="flex-grow-1 ms-md-3">
-                <h5 className="mb-1">Ashok Adurinti</h5>
+                <h5 className="mb-1">{userData.userName}</h5>
                 <p className="mb-2 pb-1" style={{ color: '#2b2a2a' }}>
-                  {email}
+                  {userData.userEmail}
                 </p>
+              
                 {/* <div className="d-md-flex justify-content-center d-lg-block">
                   <button type="button" className="btn btn-outline-primary me-1 mb-2 mb-md-0">
                     Chat

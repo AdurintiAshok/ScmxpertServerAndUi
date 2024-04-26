@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Login.css";
 import { MdOutlineMailOutline } from "react-icons/md";
 import ExfLogo from "../../assets/Exf.jpeg";
@@ -6,6 +6,8 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import user from '../../assets/User.jpg'
+import { ToastContainer,toast } from 'react-toastify';
+import { KeyData } from "../../ENDPOINTS/EndPoint";
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -16,7 +18,11 @@ const Login = () => {
   const [isCaptchaValid, setIsCaptchaValid] = useState(false);
   const [errorMessage,setErrorMessage]=useState("")
   const [isLoading, setIsLoading] = useState(false);
+  useEffect(()=>{
+    console.log(KeyData)
+  })
   const handleRecaptchaChange = (value) => {
+
    if(value)
    {
     setIsCaptchaValid(true);
@@ -39,7 +45,6 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
-    // Clear previous error messages
     setUsernameError("");
     setPasswordError("");
 
@@ -61,29 +66,36 @@ const Login = () => {
     }
     else{
       try {
+        setIsLoading(true)
         let userData={
           userEmail:username,
           userPassword:password
         }
-        const response = await fetch('http://localhost:8080/login', {
+        const response = await fetch(`${KeyData.api_end_point}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(userData)
         });
+       
         if (response.status==200){
         const token=await response.text();
         localStorage.setItem('TokenValue',token);
         localStorage.setItem('UserName',username)
-        navigate('/newshipment')
+        setIsLoading(false);
+        navigate('/newshipment');
         } else if(response.status==401){
+          setIsLoading(false);
           const errorMessage=await response.text();
           setErrorMessage(errorMessage);
         }
     } catch (error) {
-        // Handle network error
+       
+        setErrorMessage(error.message)
+        setIsLoading(false);
         console.error('Network error:', error);
+        // toast.error("Something Went Wrong", { toastId: 'success1' });
     }
     }
   };
@@ -97,6 +109,7 @@ const Login = () => {
     }
   };
   const handlePasswordChange = (e) => {
+  setErrorMessage('')
     const value = e.target.value;
     setPassword(value);
 
@@ -115,7 +128,8 @@ const Login = () => {
       class="h-100 gradient-form "
       style={{  background: "#E4E9F7", overflow: "auto" }}
     >
-      <div class="container-fluid py-4 h-100">
+          <ToastContainer/>
+      <div class="container-fluid py-4 h-100 mb-4">
         <div class="row d-flex justify-content-center align-items-center h-100">
           <div class="col-xl-10">
             <div class="card  text-black">
@@ -170,50 +184,50 @@ const Login = () => {
                         >
                           Password
                         </label>
+                       
                         <input
-                          type={showPassword ? "password" : "text"}
+                          type={!showPassword ? "password" : "text"}
                           id="form2Example22"
                           class="form-control"
                           placeholder="Password"
                           value={password}
                           onChange={handlePasswordChange}
                         />
+           
                         <span
-                          onClick={handleTogglePassword}
+                          onClick={()=>{handleTogglePassword()}}
                           className="EyeIcon"
                         >
-                          {showPassword ? "🙈" : "👁️"}
+                          {showPassword ? "🫣" : "👁️"}
                         </span>
                         {passwordError && (
-                          <p style={{ color: "red", marginTop: "5px" }}>
+                          <p style={{ color: "red" }}>
                             {passwordError}
                           </p>
                         )}
-                       <div style={{marginTop:'10px',display:'flex',justifyContent:'center'}}>
+                    
+                      </div>
+                      <div style={{marginTop:'12px',display:'flex',justifyContent:'center'}}>
                        <ReCAPTCHA
-                          sitekey="6LdLllgpAAAAAMexecY2HM1tlocPTGTpXTvWu8fc"
+                          sitekey={KeyData.google_api_key}
                           onChange={handleRecaptchaChange}
                         />
                        </div>
-                      </div>
-
                       <div className="col-md-12 mx-auto">
                         <div className="text-center pt-1 pb-1">
-                        
-                          <button  className="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                            type="button"
-                            onClick={() => {
-                              handleLogin();
-                            }}>
-      {isLoading && (
-        <div className="loader-container">
-          <div className="circular-loader"></div>
+
+                        <button  onClick={()=>{
+                          handleLogin()
+                        }} className="btn btn-primary btn-block w-50 position-relative gradient-custom-2 mb-2" type="button">
+        {isLoading && (
+          <div className="loader-container">
+            <div className="circular-loader"></div>
+          </div>
+        )}
+        <div className="button-content">
+          {!isLoading ? "Login" : ""}
         </div>
-      )}
-      <div className="button-content">
-        {!isLoading ? "Login" : ""}
-      </div>
-    </button>
+      </button>
                         </div>
 
                         <div class="d-flex align-items-center justify-content-center pb-4">

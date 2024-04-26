@@ -1,17 +1,4 @@
-.eyeiconinsignup{
-    position: absolute;
-    top: 59%;
-    right:8%; /* Adjust this value for the desired spacing from the right side */
-    transform: translateY(-50%);
-    cursor: pointer;
-}
-.eyeiconinsignup1{
-    position: absolute;
-    top: 73%;
-    right:8%; /* Adjust this value for the desired spacing from the right side */
-    transform: translateY(-50%);
-    cursor: pointer;
-}
+
 .loader-container {
     position: absolute;
     top: 50%;
@@ -27,10 +14,23 @@
     height: 30px;
     animation: spin 2s linear infinite;
   }
-  
+
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+  .firstClass {
+    position: absolute;
+    top:70%;
+    right: 4%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .secondClass {
+    position: absolute;
+    top: 54%;
+    right: 4%;
+    transform: translate(-50%, -50%);
   }
   
   /* Additional styles to maintain button height */
@@ -43,4 +43,20 @@
     justify-content: center;
     align-items: center;
     height: 100%;
+  }
+  .form-outline {
+    position: relative;
+  }
+  
+  .form-control {
+    padding-right: 40px; /* Add space for the icon */
+  }
+  
+
+  
+  /* Adjustments for responsive design */
+  @media (max-width: 768px) {
+    .form-control {
+      width: calc(100% - 40px); /* Adjust for smaller screen sizes */
+    }
   }

@@ -4,6 +4,8 @@ import Sidebar from "../../Components/Sidebar";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AuthFunction from "../../Auth/Auth";
+import { KeyData } from "../../ENDPOINTS/EndPoint";
 const NewShipment = () => {
 
   const navigate = useNavigate();
@@ -33,21 +35,59 @@ const NewShipment = () => {
   const [shipmentDescriptionError, setShipmentDescriptionError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [userName,setUserName]=useState('')
-
+  const [userEmail,setUserEmail]=useState('')
+  const [userNameError,setUserNameError]=useState('')
+  const [allUsers,setAllUsers]=useState([]);
+  const [userData,setUserData]=useState([])
   useEffect(()=>{
+    async function getAllUsers(){
+      const token=localStorage.getItem('TokenValue')
+      try {
+        const response = await fetch(`${KeyData.api_end_point}/users`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+            // Replace yourAuthToken with the actual authentication token
+          }
+        });
+        if(response.status==200){
+          const data = await response.json();
+          console.log("allUsers",data)
+          setAllUsers(data);
+          filterUsers(data);
+        }
+      } catch (error) {
+        console.error('Error checking token validity:', error);
+      }
+    }
+    async function filterUsers(allUsers){
+      const userEmail= localStorage.getItem('UserName');
+      console.log(userEmail)
+      const matchedUser = allUsers.find(user => user.userEmail === userEmail);
+      console.log("macthed",allUsers)
+      setUserData(matchedUser)
+      
+    }
+    const isAuthenticated =AuthFunction();
+  if (!isAuthenticated) {
+    navigate('/login');
+  } else {
     checkTokenValidity();
     setUserNameToState();
+    getAllUsers();
+  }
   },[])
  function setUserNameToState(){
     const userEmail=localStorage.getItem('UserName');
     console.log(userEmail);
     setUserName(userEmail);
   }
+
     const checkTokenValidity = async () => {
     const token= localStorage.getItem('TokenValue');
     console.log(token)
     try {
-      const response = await fetch('http://localhost:8080/profile', {
+      const response = await fetch(`${KeyData.api_end_point}/profile`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -123,6 +163,10 @@ const NewShipment = () => {
         setShipmentDescription(value);
         setShipmentDescriptionError(value.trim() ? '' : 'Shipment Description is required.');
         break;
+        case "userEmail":
+          setUserEmail(value)
+          setUserNameError(value.trim() ? '' : 'User Email Is Required.');
+          break;
       default:
         break;
     }
@@ -141,8 +185,9 @@ const NewShipment = () => {
     setDeliveryNumberError("");
     setBatchIdError("");
     setShipmentDescriptionError("");
-
-    // Validate shipmentNumber
+    if(userData.role=='Admin' && !userEmail.trim()){
+      setUserNameError('User Name Is Required')
+    }
     if (!shipmentNumber.trim()) {
       setShipmentNumberError("Shipment Number is required.");
       return;
@@ -215,8 +260,8 @@ const NewShipment = () => {
       return;
     }
     setIsLoading(true)
-    const userData=localStorage.getItem('userName');
-    console.log(userData)
+   
+    const userEmail1 = userData.role === 'Admin' ? userEmail : userName;
     const formData = {
       shipmentNumber: shipmentNumber,
       containerNumber: containerNumber,
@@ -230,9 +275,8 @@ const NewShipment = () => {
       deliveryNumber: deliveryNumber,
       batchId: batchId,
       shipmentDescription: shipmentDescription,
-      userEmail:userName
-
-    }
+      userEmail: userEmail1
+    };
     // Add other form data fields as needed
 
     try {
@@ -245,7 +289,6 @@ const NewShipment = () => {
       });
 
       if (!response.ok) {
-        console.log(response)
         throw new Error('Network response was not ok');
       }
       if (response.ok) {
@@ -273,6 +316,34 @@ const NewShipment = () => {
           <form onSubmit={handleSubmit}>
   <div class="row">
     <div class="col-sm">
+    {userData && userData.role === "Admin" && (
+  <div className="form-group w-100 mb-3" >
+    <label htmlFor="userEmail">Select User Email*</label>
+    <select  
+  className="form-select"
+  id="userEmail"
+  name="userEmail"
+  value={userEmail}
+  onChange={handleChange}
+>
+
+  {allUsers.map((user) => (
+    // Render option only if user is not an admin
+    user.role === "User" && (
+      <option  value={user.userEmail}>
+        {user.userEmail}
+      </option>
+    )
+  ))}
+</select>
+
+
+    {userNameError && (
+      <p style={{ color: "red" }}>{userNameError}</p>
+    )}
+  </div>
+)}
+
       <div class="form-group w-100 mb-3">
         <label for="exampleInputEmail1">Shipment Number*</label>
         <input type="number" class="form-control" id="exampleInputEmail1" name="shipmentNumber" value={shipmentNumber} onChange={handleChange} aria-describedby="emailHelp" placeholder="ShipmentNumber" />
@@ -390,7 +461,7 @@ const NewShipment = () => {
   </div>
   <div className="row justify-content-center mt-4">
     <div className="col-md-6 text-center mb-2">
-      <button type="submit" className="btn btn-outline-primary btn-lg w-100 position-relative">
+      <button type="submit" className="btn btn-outline-primary btn-lg w-100 ">
         {isLoading && (
           <div className="loader-container">
             <div className="circular-loader"></div>

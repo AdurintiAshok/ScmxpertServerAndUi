@@ -4,6 +4,7 @@ import Logo from "../../assets/Exf.jpeg";
 import ExfLogo from "../../assets/Exf.jpeg";
 import "./Signup.css";
 import { useNavigate } from "react-router-dom";
+import { KeyData } from "../../ENDPOINTS/EndPoint";
 const Signup = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -32,7 +33,7 @@ const Signup = () => {
 
       }
       console.log(formData)
-      const response = await fetch('http://localhost:8080/register', {
+      const response = await fetch(`${KeyData.api_end_point}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -258,7 +259,7 @@ const Signup = () => {
                         </label>
                         <input
 
-                          type={showPassword ? "password" : "text"}
+                          type={!showPassword ? "password" : "text"}
                           id="form2Example22"
                           class="form-control"
                           placeholder="Enter new Password"
@@ -269,9 +270,10 @@ const Signup = () => {
                           onClick={() => {
                             handleTogglePassword("password");
                           }}
-                          style={!passwordError ? { position: "absolute", top: "56%", right: "7%", transform: "translate(-50%, -50%)" } : { position: "absolute", top: "54%", right: "7%", transform: "translate(-50%, -50%)" }}
+                          className={`eyeiconinsignup1 ${!passwordError ? 'firstClass' : 'secondClass'}`}
+                          
                         >
-                          {showPassword ? "🙈" : "👁️"}
+                          {showPassword ? "🫣" : "👁️"}
                         </span>
                         {passwordError && (
                           <p style={{ color: "red", marginTop: "0.5rem" }}>{passwordError}</p>
@@ -282,7 +284,7 @@ const Signup = () => {
                           Confirm Password
                         </label>
                         <input
-                          type={confirmshowPassword ? "password" : "text"}
+                          type={!confirmshowPassword ? "password" : "text"}
                           id="form2Example22"
                           class="form-control"
                           placeholder="Confirm new Password"
@@ -293,9 +295,10 @@ const Signup = () => {
                           onClick={() => {
                             handleTogglePassword("confirmPassword");
                           }}
-                          style={!confirmPasswordError ? { position: "absolute", top: "69%", right: "7%", transform: "translate(-50%, -50%)" } : { position: "absolute", top: "69%", right: "7%", transform: "translate(-50%, -50%)" }}
+                        
+                          className={`eyeiconinsignup1 ${!passwordError ? 'firstClass' : 'secondClass'}`}
                         >
-                          {confirmshowPassword ? "🙈" : "👁️"}
+                          {confirmshowPassword ? "🫣" : "👁️"}
                         </span>
                         {confirmPasswordError && (
                           <p style={{ color: "red" }}>{confirmPasswordError}</p>

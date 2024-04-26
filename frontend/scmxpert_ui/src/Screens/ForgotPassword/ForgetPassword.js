@@ -4,6 +4,7 @@ import { Button } from 'bootstrap';
 import ExfLogo from '../../assets/Exf.jpeg'
 import { useNavigate } from 'react-router-dom';
 import './ForgotPassword.css'
+import { KeyData } from '../../ENDPOINTS/EndPoint';
 const ForgetPassword = (params) => {
   const navigate=useNavigate();
   const [username, setUsername] = useState("");
@@ -38,7 +39,7 @@ const ForgetPassword = (params) => {
   async function   apiCall (){
     setIsLoading(true)
     try {
-      const response = await fetch('http://localhost:8080/forgot-password', {
+      const response = await fetch(`${KeyData.api_end_point}/forgot-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,8 +49,11 @@ const ForgetPassword = (params) => {
 
       if (!response.ok) {
         const errorMessage = await response.text();
+   
         throw new Error(errorMessage || 'Failed to reset password');
       }
+   
+      console.log(response)
       const data = await response.text();
       setIsLoading(false)
       navigate('/login')
@@ -104,7 +108,7 @@ const ForgetPassword = (params) => {
           </div>
         )}
         <div className="button-content">
-          {!isLoading ? "Create Shipment" : ""}
+          {!isLoading ? "Forgot Password" : ""}
         </div>
       </button>
           </div>

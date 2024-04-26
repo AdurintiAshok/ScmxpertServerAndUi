@@ -24,26 +24,27 @@
       background-size:cover;
       justify-content: center;
         border-radius:5px;
+      
     }
     @media only screen and (max-width: 768px) {
         .hello{
             background: url('../../assets/transport.jpg');
             background-size: cover;
             border-radius:5px;
-            /* border: 2px solid #f5d1b0; */
               border:none;
-            /* object-fit: contain; */
-    
+
+            opacity: 0.5;
         }
 
       }
       .EyeIcon {
         position: absolute;
-        top: 48%;
-        right:8%; /* Adjust this value for the desired spacing from the right side */
+        top: 75%;
+        right:2%; /* Adjust this value for the desired spacing from the right side */
         transform: translateY(-50%);
         cursor: pointer;
-
+        display: flex;
+        justify-content: end;
       }
       .loader-container {
         position: absolute;
@@ -64,4 +65,11 @@
       @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
+      }
+      .form-outline {
+        position: relative;
+      }
+      
+      .form-control {
+        padding-bottom: 40px; /* Adjust this value to leave space for the eye icon */
       }
