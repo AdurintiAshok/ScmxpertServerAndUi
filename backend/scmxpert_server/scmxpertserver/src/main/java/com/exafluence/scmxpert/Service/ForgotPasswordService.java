@@ -27,18 +27,17 @@ public class ForgotPasswordService {
 
     @Value("${spring.mail.port}")
     private String serverPort;
-
+    @Value("${app.resetPassword.url}")
+    private String resetPasswordUrl;
     public boolean resetPassword(String email) {
-        System.out.println(email);
         RegistrationModel user = registrationRepo.findByUserEmail(email);
-        System.out.println("Result: " + user);
         if (user != null) {
             String token = UUID.randomUUID().toString();
             user.setToken(token);
             LocalDateTime expirationDateTime = LocalDateTime.now().plusMinutes(5);
             user.setExpireTime(expirationDateTime);
             registrationRepo.save(user);
-            String resetPasswordLink = "http://localhost:3000/reset-password?token="+token;
+            String resetPasswordLink = resetPasswordUrl+token;
             sendEmailWithResetLink(email, resetPasswordLink);
             return true;
         }

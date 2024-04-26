@@ -5,6 +5,7 @@ import com.exafluence.scmxpert.Model.User;
 import com.exafluence.scmxpert.Respository.ShipmentRepository;
 import com.exafluence.scmxpert.Respository.UserShipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,18 +18,20 @@ public class ShipmentService {
     private ShipmentRepository shipmentRepository;
     @Autowired
     private UserShipmentRepository userShipmentRepository;
-
+    @Value("${user.role}")
+    private String userRole;
     public void createShipment(NewShipMent shipment) {
         // Your logic to save the shipment to the database
         shipmentRepository.save(shipment);
     }
+
 
     public NewShipMent getShipmentByShipmentNumber(String shipmentNumber) {
         // Your logic to retrieve the shipment from the database by shipment number
         return shipmentRepository.findByShipmentNumber(shipmentNumber);
     }
     public List<NewShipMent> getAllShipments(String email,String role) {
-        if ("Admin".equals(role)) {
+        if (userRole.equals(role)) {
             // If user is an admin, return all shipments
             return userShipmentRepository.findAll();
         } else {

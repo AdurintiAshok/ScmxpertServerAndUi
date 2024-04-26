@@ -16,7 +16,6 @@ public class LoginService {
         try {
             LoginModel user = userRepository.findByUserEmail(email);
             if (user != null) {
-                System.out.println("I Am Ashok"+user);
                 String storedPassword = user.getUserPassword();
                 // Password does not match
                 return Objects.equals(password, storedPassword); // Authentication successful

@@ -9,6 +9,7 @@ import com.exafluence.scmxpert.Respository.UserRepository;
 import com.exafluence.scmxpert.Service.TokenBlacklistService;
 import com.exafluence.scmxpert.Service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,8 @@ public class AuthController {
 
     @Autowired
     RegistrationRepo poster;
+    @Value("${app.swagger.url}")
+    private String swaggerUrl;
     @Autowired
     private LoginService loginService;
     @Autowired
@@ -37,7 +40,7 @@ public class AuthController {
     @Hidden
     @RequestMapping(value = "/")
     public void redirect(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/swagger-ui/index.html");
+        response.sendRedirect(swaggerUrl);
     }
 
     @CrossOrigin
@@ -86,9 +89,9 @@ public class AuthController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No bearer token found in the request header").hasBody();
         }
-       
-    }
 
+    }
+@CrossOrigin
     @PostMapping("/logout")
     public ResponseEntity<Object> logout(@RequestHeader("Authorization") String token) {
         tokenBlacklistService.addToBlacklist(token);
