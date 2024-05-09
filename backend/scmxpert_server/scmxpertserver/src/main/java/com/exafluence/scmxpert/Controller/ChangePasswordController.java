@@ -26,23 +26,20 @@ public class ChangePasswordController {
     @Autowired
     private ChangePasswordRepo changePasswordRepo;
 
-    @CrossOrigin
     @PostMapping("/reset-password")
     public ResponseEntity<Object> resetPassword(@RequestParam("token") String token, @RequestBody ChangePasswordModel request) {
-        // Find the user record by the email
-//        RegistrationModel user = userRepository.findByUserEmail(request.getUserEmail());
-        RegistrationModel user = userRepository.findByToken(token);
-        if (user == null || user.getExpireData().isBefore(LocalDateTime.now())) {
-            return ResponseEntity.badRequest().body("Invalid or expired token");
+        try {
+            RegistrationModel user = userRepository.findByToken(token);
+            if (user == null || user.getExpireData().isBefore(LocalDateTime.now())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+            }
+            user.setUserPassword(request.getNewPassword());
+            userRepository.save(user);
+            return ResponseEntity.ok("Password reset successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
         }
-        if (user == null) {
-            return ResponseEntity.badRequest().body("User not found");
-        }
-        user.setUserPassword(request.getNewPassword());
-        userRepository.save(user);
-
-        return ResponseEntity.ok("Password reset successfully");
-
     }
 
 }

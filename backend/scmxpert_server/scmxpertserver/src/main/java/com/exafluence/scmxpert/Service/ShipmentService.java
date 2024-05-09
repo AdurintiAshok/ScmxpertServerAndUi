@@ -18,27 +18,36 @@ public class ShipmentService {
     private ShipmentRepository shipmentRepository;
     @Autowired
     private UserShipmentRepository userShipmentRepository;
-    @Value("${user.role}")
-    private String userRole;
+    private String userRole ="Admin";
     public void createShipment(NewShipMent shipment) {
-        // Your logic to save the shipment to the database
-        shipmentRepository.save(shipment);
-    }
+        try {
+            shipmentRepository.save(shipment);
+        } catch (Exception e) {
+            e.printStackTrace();
 
-
-    public NewShipMent getShipmentByShipmentNumber(String shipmentNumber) {
-        // Your logic to retrieve the shipment from the database by shipment number
-        return shipmentRepository.findByShipmentNumber(shipmentNumber);
-    }
-    public List<NewShipMent> getAllShipments(String email,String role) {
-        if (userRole.equals(role)) {
-            // If user is an admin, return all shipments
-            return userShipmentRepository.findAll();
-        } else {
-            // If user is not an admin, return shipments associated with the provided email
-            return userShipmentRepository.findByUserEmail(email);
         }
     }
-    // Add more methods as needed
+
+    public NewShipMent getShipmentByShipmentNumber(String shipmentNumber) {
+        try {
+            return shipmentRepository.findByShipmentNumber(shipmentNumber);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<NewShipMent> getAllShipments(String email, String role) {
+        try {
+            if (userRole.equals(role)) {
+                return userShipmentRepository.findAll();
+            } else {
+                return userShipmentRepository.findByUserEmail(email);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }

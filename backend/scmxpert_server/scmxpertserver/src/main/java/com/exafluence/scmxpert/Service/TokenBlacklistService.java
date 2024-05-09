@@ -14,12 +14,22 @@ public class TokenBlacklistService {
 
 
     public void addToBlacklist(String token) {
-        BlacklistedToken blacklistedToken = new BlacklistedToken(token);
-        tokenBlackListRepo.save(blacklistedToken);
+        try {
+            BlacklistedToken blacklistedToken = new BlacklistedToken(token);
+            tokenBlackListRepo.save(blacklistedToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isBlacklisted(String token) {
-        BlacklistedToken blacklistedToken = tokenBlackListRepo.findByToken(token);
-        return blacklistedToken != null;
+        try {
+            BlacklistedToken blacklistedToken = tokenBlackListRepo.findByToken(token);
+            return blacklistedToken != null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
+
 }

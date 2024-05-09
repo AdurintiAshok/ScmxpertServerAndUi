@@ -6,10 +6,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.log4j.Log4j2;
 import org.paseto4j.commons.PasetoException;
 import org.paseto4j.commons.SecretKey;
+import org.paseto4j.commons.Token;
 import org.paseto4j.commons.Version;
 import org.paseto4j.version3.Paseto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -21,18 +23,18 @@ import java.util.Set;
 @Log4j2
 @Service
 public class TokenService {
-
-    @Value("${app.token.secret}")
+    @Autowired
+    private Environment environment;
     String secret;
 
-    @Value("${app.token.footer}")
     String footer;
-    @Value("${expireDate}")
     private long expireDate;
     public long getExpireDate() {
         return expireDate;
     }
     public String encrypt(LoginModel loginmodel) {
+
+        this.footer=environment.getProperty("PASETO_TOKEN_FOOTER");
         String payload;
         try {
             loginmodel.setExpireDate(Instant.now().plus(Duration.ofMinutes(60)));
@@ -54,6 +56,7 @@ public class TokenService {
 
     public boolean decrypt(String token) {
         try {
+
             String payload = Paseto.decrypt(key(), token, footer);
             LoginModel loginmodel = mapper().readValue(payload,LoginModel.class);
             if (Instant.now().isAfter(loginmodel.getExpireDate())) {
@@ -69,14 +72,27 @@ public class TokenService {
         }
         return false;
     }
-    private SecretKey key() {
-        return new SecretKey(this.secret.getBytes(StandardCharsets.UTF_8), Version.V3);
+    public SecretKey key() {
+        try{
+            String secret = environment.getProperty("PASETO_SECRET_KEY");
+            return new SecretKey(secret.getBytes(StandardCharsets.UTF_8), Version.V3);
+        }
+        catch (Exception e){
+            new IllegalStateException("Failed to create SecretKey");
+        }
+        return null;
     }
 
-    private JsonMapper mapper() {
-        JsonMapper mapper = new JsonMapper();
-        mapper.registerModule(new JavaTimeModule());
-        return mapper;
+    public JsonMapper mapper() {
+        try{
+            JsonMapper mapper = new JsonMapper();
+            mapper.registerModule(new JavaTimeModule());
+            return mapper;
+        }
+        catch (Exception e){
+            new IllegalStateException("Failed to create JsonMapper");
+        }
+        return null;
     }
 
 }

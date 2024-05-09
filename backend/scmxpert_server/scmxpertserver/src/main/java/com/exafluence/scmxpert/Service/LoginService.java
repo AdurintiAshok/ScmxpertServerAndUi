@@ -11,37 +11,33 @@ import java.util.Objects;
 public class LoginService {
     @Autowired
     private UserRepository userRepository;
-
     public boolean authenticate(String email, String password) {
         try {
             LoginModel user = userRepository.findByUserEmail(email);
             if (user != null) {
                 String storedPassword = user.getUserPassword();
-                // Password does not match
-                return Objects.equals(password, storedPassword); // Authentication successful
+                return Objects.equals(password, storedPassword);
             } else {
-                return false; // User not found
+                return false;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return false; // Error occurred during authentication
+            return false;
         }
     }
-    public  boolean Verify(String email) {
+
+    public boolean verify(String email) {
         try {
             LoginModel user = userRepository.findByUserEmail(email);
             if (user != null) {
-                String useremail = user.getuserEmail();
-                // Password does not match
-                return Objects.equals(email, useremail); // Authentication successful
+                String userEmail = user.getuserEmail();
+                return Objects.equals(email, userEmail);
             } else {
-                return false; // User not found
+                return false;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return false; // Error occurred during authentication
+            return false;
         }
     }
-
 }
-

@@ -31,13 +31,10 @@ public class NewShipMentController {
     @PostMapping("/new-shipment")
     public ResponseEntity<Object> createShipment(@RequestBody NewShipMent shipment) {
         try {
-            // Check if shipment ID already exists
             NewShipMent existingShipment = shipmentService.getShipmentByShipmentNumber(shipment.getShipmentNumber());
             if (existingShipment != null ) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Shipment ID already exists.");
             }
-
-            // If shipment ID doesn't exist, proceed to create the shipment
             shipmentService.createShipment(shipment);
 
             return ResponseEntity.status(HttpStatus.OK).body("Succesfully Created");
@@ -70,17 +67,21 @@ public class NewShipMentController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve user Data.");
             }
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or Expired token.");
         }
     }
     // Method to validate token
     private boolean isValidToken(String token) {
         if (token != null && token.startsWith("Bearer ")) {
-            String tokenValue = token.substring(7);
-            boolean status =service.decrypt(tokenValue);
-            return status;
-        }
-        else {return  false;
+            try {
+                String tokenValue = token.substring(7);
+                return service.decrypt(tokenValue);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            return false;
         }
     }
     }

@@ -14,18 +14,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class ForgotPasswordController {
     @Autowired
     private ForgotPasswordService forgotPasswordService;
-@CrossOrigin
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordModel request) {
-        String email = request.getUserEmail();
-        System.out.println(email);
-       boolean result= forgotPasswordService.resetPassword(email);
-        if(result){
-            return ResponseEntity.ok("Reset password email sent successfully.");
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("User with email " + email + " does not exist. Unable to send reset password email.");
+        try {
+            String email = request.getUserEmail();
+            boolean result = forgotPasswordService.resetPassword(email);
+            if (result) {
+                return ResponseEntity.ok("Reset password email sent successfully.");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("User with email " + email + " does not exist. Unable to send reset password email.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An unexpected error occurred while processing the request.");
         }
     }
 }

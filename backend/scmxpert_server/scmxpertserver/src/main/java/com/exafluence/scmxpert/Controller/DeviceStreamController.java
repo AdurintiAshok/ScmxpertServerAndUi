@@ -6,6 +6,7 @@ import com.exafluence.scmxpert.Respository.DeviceStreamRepo;
 import com.exafluence.scmxpert.Service.TokenBlacklistService;
 import com.exafluence.scmxpert.Service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,23 +30,35 @@ public class DeviceStreamController {
         if (isValidToken(token) && !tokenBlacklistService.isBlacklisted(token)) {
             try {
                 List<SensorData> shipments = deviceStreamRepo.findAll();
-                System.out.println(shipments);
-                return ResponseEntity.ok().body(shipments);
+                return ResponseEntity.ok(shipments);
+            } catch (DataAccessException e) {
+
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            } catch (IllegalArgumentException e) {
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve shipments.");
+
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
         } else {
+
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token.");
         }
     }
 
     private boolean isValidToken(String token) {
         if (token != null && token.startsWith("Bearer ")) {
-            String tokenValue = token.substring(7);
-            boolean status =service.decrypt(tokenValue);
-            return status;
-        }
-        else {return  false;
+            try {
+                String tokenValue = token.substring(7);
+                return service.decrypt(tokenValue);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            return false;
         }
     }
+
 }
