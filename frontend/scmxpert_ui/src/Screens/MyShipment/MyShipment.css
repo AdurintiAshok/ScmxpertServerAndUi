@@ -6,11 +6,13 @@
     
     }
     .hii{
-      overflow: auto;
+      overflow-x: auto;
     }
 
   }
   .tableship{
+   table-layout: fixed;
+   overflow-x: auto;
   
 }
 

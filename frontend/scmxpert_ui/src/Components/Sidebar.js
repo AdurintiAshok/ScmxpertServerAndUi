@@ -144,6 +144,14 @@ React.useEffect(()=>{
               {isMenuOpen && <span className="link-name">New Shipment</span>}
             </a>
           </li>
+          {userData && userData.role === 'User' && (
+          <li>
+            <a href="Gemini" title="Help">
+            <i class='bx bx-support'></i>
+              {isMenuOpen && <span className="link-name">Help & Support</span>}
+            </a>
+          </li>
+          )}
           {userData && userData.role === 'Admin' && (
   <li>
     <a href="datastream" title="datastream">
@@ -199,7 +207,7 @@ React.useEffect(()=>{
             <TbMenuDeep size={28} color="white" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"/>
 
           <span className="text welcomeText">
-            Welcome to ScmXpertLite Ashok Adurinti
+            Welcome to ScmXpertLite 
           </span>
         </div>
 
@@ -238,6 +246,14 @@ React.useEffect(()=>{
        <span className="link-name ms-2">New Shipment</span>
             </a>
           </li>
+          {userData && userData.role === 'User' && (
+          <li>
+            <a href="Gemini" className="anchor" style={{color:'black'}}>
+            <i class='bx bx-support'></i>
+       <span className="link-name ms-2">Help & Support</span>
+            </a>
+          </li>
+          )}
           {userData && userData.role === 'Admin' && (
   <li>
     <a href="datastream" className="anchor" title="datastream"  style={{color:'black'}}>

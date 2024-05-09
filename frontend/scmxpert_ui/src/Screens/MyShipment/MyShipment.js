@@ -249,8 +249,9 @@ const MyShipment = () => {
                 <div className="circular-loader"></div>
               </div>
             ) : (
+              <>
               <div class="row tableship" >
-                <div>
+                
                 <div className="hii">
                 <table className="table table-striped mb-2">
                     <thead>
@@ -274,7 +275,9 @@ const MyShipment = () => {
                     </tbody>
                   </table>
                   </div>
-                  <div className="pagination-container">
+              </div>
+              <div className="row">
+              <div className="pagination-container">
                     <nav aria-label="Page navigation example">
                       <ul className="pagination">
                         <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
@@ -294,8 +297,9 @@ const MyShipment = () => {
                     </nav>
                   </div>
                 </div>
-              </div>
+              </>
             )}
+            
           </form>
         </div>
       </div>

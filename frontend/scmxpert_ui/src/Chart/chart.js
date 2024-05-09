@@ -48,7 +48,9 @@ useEffect(()=>{
     const userEmail= localStorage.getItem('UserName');
     console.log(userEmail)
     const matchedUser = allUsers.find(user => user.userEmail === userEmail);
-    console.log("macthed",matchedUser)
+   if(matchedUser.role=="User"){
+    navigate('*')
+   }
     fetchShipments(matchedUser);
     setUserData(matchedUser)
     
@@ -103,11 +105,15 @@ useEffect(()=>{
   };
  
   return (
-        <div style={{ overflowX: "hidden", background: "#E4E9F7", height: "100%" ,width:'100%'}}>
+        <div style={{ overflowX: "hidden",overflowY:'auto', background: "#E4E9F7", height: "100%" ,width:'100%'}}>
         <Sidebar/>
+   
+
+        <div className="newship">
+        <div class="container">
   {userData && userData.role === 'Admin' ? (
 <div className='maindiv '>
-<div className="row " style={{zIndex:-1}}>
+<div className="row" >
   <div className="col-12 col-md-6">
     <Chart
       chartType="PieChart"
@@ -117,7 +123,7 @@ useEffect(()=>{
       height={"400px"}
     />
   </div>
-  <div className="col-12 col-md-6" style={{ margin: "0 auto", maxWidth: "100%" }}>
+  <div className="col-12 col-md-6">
     <Chart
       chartType="PieChart"
       data={users}
@@ -134,6 +140,8 @@ useEffect(()=>{
   <div className="circular-loader"></div>
 </div>
 )}
+</div>
+</div>
        </div>
   )
 }

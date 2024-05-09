@@ -32,7 +32,6 @@ const Signup = () => {
         role:selectedRole
 
       }
-      console.log(formData)
       const response = await fetch(`${KeyData.api_end_point}/register`, {
         method: 'POST',
         headers: {
@@ -40,11 +39,16 @@ const Signup = () => {
         },
         body: JSON.stringify(formData)
       });
-
+      if(response.status==409){
+        alert("User with this  Email is Already Existed");
+        setIsLoading(false);
+        setEmail('');
+        return;
+     
+      }
       if (!response.ok) {
         throw new Error('Failed to register');
       }
-      console.log(response)
       setIsLoading(false)
       alert('Registration successful!');
       navigate('/login')
@@ -55,8 +59,7 @@ const Signup = () => {
       setIsCheckboxAccepted(false);
     } catch (error) {
       setIsLoading(false)
-      console.error('Registration error:', error);
-      alert('Registration failed. Please try again.');
+    
     }
   };
 
@@ -142,8 +145,6 @@ const Signup = () => {
       !confirmPasswordError &&
       !selectedRoleError
     ) {
-      // Perform signup logic (e.g., API request)
-      console.log("Signup successful!");
       handleSubmit()
    
     }

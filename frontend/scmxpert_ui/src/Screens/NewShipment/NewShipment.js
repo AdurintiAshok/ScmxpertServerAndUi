@@ -87,7 +87,7 @@ const NewShipment = () => {
     const token= localStorage.getItem('TokenValue');
     console.log(token)
     try {
-      const response = await fetch(`${KeyData.api_end_point}/profile`, {
+      const response = await fetch(`${KeyData.api_end_point}/validate-token`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -160,8 +160,14 @@ const NewShipment = () => {
         setBatchIdError(value.trim() ? '' : 'Batch Id is required.');
         break;
       case "shipmentDescription":
+        
+        if (value.length <= 20) {
         setShipmentDescription(value);
         setShipmentDescriptionError(value.trim() ? '' : 'Shipment Description is required.');
+        }
+        else{
+          setShipmentDescriptionError("Shipment description cannot exceed 20 words.");
+        }
         break;
         case "userEmail":
           setUserEmail(value)
@@ -326,7 +332,8 @@ const NewShipment = () => {
   value={userEmail}
   onChange={handleChange}
 >
-
+<option value="">Select User Email</option>
+<option value={userName}>{userName} (Yours)</option>
   {allUsers.map((user) => (
     // Render option only if user is not an admin
     user.role === "User" && (

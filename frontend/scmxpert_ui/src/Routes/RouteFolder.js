@@ -12,6 +12,8 @@ import MyShipment from '../Screens/MyShipment/MyShipment';
 import DataStream from '../Screens/DataStream/DataStream';
 import PasswordResetForm from '../Screens/PasswordUpdate/PasswordResetForm';
 import ChartComponent from '../Chart/chart';
+import Gemini from '../Components/Gemini';
+import GeminiInReact from '../About/About';
 
 const RouteFolder = () => {
 
@@ -21,7 +23,7 @@ const RouteFolder = () => {
     { path: '/', element: <Navigate to="/login" /> },
     { path: '/login', element: <Login /> },
     { path: '/forgotpassword', element: <ForgetPassword /> },
-    { path: '/about', element: <AboutFolder /> },
+    { path: '/about', element: <GeminiInReact /> },
     { path: '/signup', element: <Signup /> },
     { path: '/architecture', element:  <Dash />  },
     { path: '/myaccount', element: <MyAccount /> },
@@ -31,6 +33,7 @@ const RouteFolder = () => {
     { path: '/chart', element:  <ChartComponent /> },
     { path: '/reset-password', element:  <PasswordResetForm /> },
     { path: '*', element: <EmptyRoute />  },
+    { path: 'Gemini', element: <Gemini />  },
   ];
   
   return (

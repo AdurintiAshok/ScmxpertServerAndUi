@@ -67,6 +67,9 @@ const DataStream = () => {
       console.log(userEmail)
       const matchedUser = allUsers.find(user => user.userEmail === userEmail);
       console.log("macthed",allUsers)
+      if(matchedUser.role=="User"){
+        navigate('*')
+       }
       fetchShipments(matchedUser);
       setUserData(matchedUser)
       
@@ -85,7 +88,7 @@ const DataStream = () => {
     const token= localStorage.getItem('TokenValue');
    console.log(token)
     try {
-      const response = await fetch(`${KeyData.api_end_point}/profile`, {
+      const response = await fetch(`${KeyData.api_end_point}/validate-token`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`
