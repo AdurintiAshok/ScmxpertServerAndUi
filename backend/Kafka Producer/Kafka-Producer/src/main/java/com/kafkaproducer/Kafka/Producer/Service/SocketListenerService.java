@@ -1,6 +1,7 @@
 package com.kafkaproducer.Kafka.Producer.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -10,7 +11,6 @@ import java.net.Socket;
 
 @Service
 public class SocketListenerService implements Runnable {
-
     @Autowired
     private KafkaProducerService kafkaProducerService;
 

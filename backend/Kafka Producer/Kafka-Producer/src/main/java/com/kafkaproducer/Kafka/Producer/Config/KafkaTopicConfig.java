@@ -7,12 +7,14 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaTopicConfig {
-
+private  String TopicName="DeviceStream";
+private  int partitionCount=3;
+private  int relicaCount=1;
     @Bean
     public NewTopic yourTopic() {
         return TopicBuilder.name("DeviceStream")
-                .partitions(3) // Set the desired number of partitions
-                .replicas(1) // Set the desired number of replicas
+                .partitions(partitionCount) // Set the desired number of partitions
+                .replicas(relicaCount) // Set the desired number of replicas
                 .build();
     }
 }

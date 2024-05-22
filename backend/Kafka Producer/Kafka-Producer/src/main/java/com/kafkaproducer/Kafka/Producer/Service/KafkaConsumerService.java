@@ -33,7 +33,6 @@ public class KafkaConsumerService {
         Document doc=  Document.parse(message);
         System.out.println(doc);
         mongocollection.insertOne(doc);
-        System.out.println("insertion on...11111");
     }
 
 
