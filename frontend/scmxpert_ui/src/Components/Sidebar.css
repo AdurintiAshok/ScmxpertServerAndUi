@@ -4,7 +4,8 @@
     position: fixed;
     height: 100%;
     width: 260px;
-    background-color: #11101d
+    /* background-color: #11101d */
+    background-color: #14beed
 }
 
 .sidebar .logo-details img {

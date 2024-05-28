@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import AuthFunction from "../../Auth/Auth";
 import { KeyData } from "../../ENDPOINTS/EndPoint";
+import { LuSmilePlus } from "react-icons/lu";
 const MyShipment = () => {
   const [shipments, setShipMents] = React.useState([]);
   const [deviceId, setDeviceId] = useState('')
@@ -14,6 +15,7 @@ const MyShipment = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [userData, setUserData] = useState([])
   const [deviceIds, setDeviceIds] = useState([]);
+  const [loader,setLoader]=useState(false);
   const navigate = useNavigate();
   React.useEffect(() => {
     async function fetchShipments(dataPass) {
@@ -40,8 +42,13 @@ const MyShipment = () => {
         const data = await response.json();
         const extractedDeviceIds = [...new Set(data.map(obj => obj.deviceId))];
         setDeviceIds(extractedDeviceIds);
-
         setShipMents(data)
+        if(data.length==0){
+          setLoader(true)
+        }
+        else{
+          setLoader(false)
+        }
         console.log('ShipmentsFrom Data:', data);
         return data; // Return the fetched data if needed
       } catch (error) {
@@ -221,9 +228,10 @@ const MyShipment = () => {
       <Sidebar />
       <div >
         <div class="container" style={{ marginTop: '2%' }}>
+        {shipments.length > 0 ? (
           <form>
             <div className="row mb-4" style={{ background: '#f3eae8', padding: '30px' }}>
-              <h4>Please Select a Device Id to see the Data Stream</h4>
+              <h4>Please Select a Device Id to see Your Shipments</h4>
               <div className="form-group">
 
                 <div className="d-flex flex-column" >
@@ -244,11 +252,7 @@ const MyShipment = () => {
                 </div>
               </div>
             </div>
-            {!shipments.length > 0 ? (
-              <div className="loader-container">
-                <div className="circular-loader"></div>
-              </div>
-            ) : (
+            
               <>
               <div class="row tableship" >
                 
@@ -298,9 +302,28 @@ const MyShipment = () => {
                   </div>
                 </div>
               </>
-            )}
+          
             
           </form>
+        ):(
+           <>
+           {
+            !loader ?
+             (
+              <div className="loader-container">
+              <div className="loaderforstream">
+<div className="dot"></div>
+<div className="dot"></div>
+<div className="dot"></div>
+</div>
+</div>
+             ) :(      <div className="loader-container">
+             <p>No Data Available for this User Create a shipment now <LuSmilePlus size={20} color="green"  onClick={()=>{navigate('/newshipment')}} style={{cursor: "pointer"}}/></p>
+             </div>)
+           }
+           </>
+          
+        )}
         </div>
       </div>
     </div>

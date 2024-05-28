@@ -470,8 +470,12 @@ const NewShipment = () => {
     <div className="col-md-6 text-center mb-2">
       <button type="submit" className="btn btn-outline-primary btn-lg w-100 ">
         {isLoading && (
-          <div className="loader-container">
-            <div className="circular-loader"></div>
+          
+          <div className="loaderforshipment">
+    <div className="dot"></div>
+    <div className="dot"></div>
+    <div className="dot"></div>
+ 
           </div>
         )}
         <div className="button-content">

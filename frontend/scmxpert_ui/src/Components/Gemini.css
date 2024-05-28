@@ -71,7 +71,7 @@ margin-top: 13px;
   align-items: center;
   padding: 10px;
 
-  position: fixed;
+  position:absolute;
   /* Change position to absolute */
   bottom: 0;
   /* Position the input at the bottom */
@@ -160,3 +160,34 @@ margin-top: 13px;
   background-color: #01181a; /* Change background color on hover */
   color: wheat;
 }
+.loaderforgemini {
+  display: flex;
+ flex-direction: row;
+  height: 40px;
+  margin: px 0;
+}
+
+.loaderforgemini .dot {
+  width: 8px;
+  height: 8px;
+  margin: 0 4px;
+  background-color: #57075e;
+  border-radius: 50%;
+  animation: loaderforgemini 0.8s infinite alternate;
+}
+
+.loaderforgemini .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loaderforgemini .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes loaderforgemini {
+  to {
+    opacity: 0.3;
+    transform: translateY(-6px);
+  }
+}
+

@@ -189,4 +189,36 @@
     align-items: center;
     height: 100%;
   }
+  .loaderforshipment {
+    display: flex;
+   flex-direction: row;
+    height: 40px;
+    margin: px 0;
+    justify-content: center;
+  }
+  
+  .loaderforshipment .dot {
+    width: 8px;
+    height: 8px;
+    margin: 0 4px;
+    background-color: #1a0202;
+    border-radius: 50%;
+    animation: loaderforstream 0.8s infinite alternate;
+    margin-top: 13px;
+  }
+  
+  .loaderforshipment .dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .loaderforshipment .dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  @keyframes loaderforstream {
+    to {
+      opacity: 0.3;
+      transform: translateY(-6px);
+    }
+  }
   

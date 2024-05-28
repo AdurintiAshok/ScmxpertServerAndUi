@@ -84,7 +84,7 @@ const Login = () => {
         localStorage.setItem('TokenValue',token);
         localStorage.setItem('UserName',username)
         setIsLoading(false);
-        navigate('/newshipment');
+        navigate('/architecture');
         } else if(response.status==401){
           setIsLoading(false);
           const errorMessage=await response.text();
@@ -126,7 +126,7 @@ const Login = () => {
   return (
     <section
       class="h-100 gradient-form "
-      style={{  background: "#E4E9F7", overflow: "auto" }}
+      style={{  background: "#B5C18E", overflow: "auto" }}
     >
           <ToastContainer/>
       <div class="container-fluid py-4 h-100 mb-4">
@@ -200,13 +200,15 @@ const Login = () => {
                         >
                           {showPassword ? "🫣" : "👁️"}
                         </span>
-                        {passwordError && (
-                          <p style={{ color: "red" }}>
-                            {passwordError}
-                          </p>
-                        )}
+                    
                     
                       </div>
+                      {passwordError && (
+    <p style={{ color: "red" }}>
+        {passwordError}
+    </p>
+    )}
+
                       <div style={{marginTop:'12px',display:'flex',justifyContent:'center'}}>
                        <ReCAPTCHA
                           sitekey={KeyData.google_api_key}
@@ -221,7 +223,11 @@ const Login = () => {
                         }} className="btn btn-primary btn-block w-50 position-relative gradient-custom-2 mb-2" type="button">
         {isLoading && (
           <div className="loader-container">
-            <div className="circular-loader"></div>
+                                          <div className="loaderforlogin">
+    <div className="dot"></div>
+    <div className="dot"></div>
+    <div className="dot"></div>
+  </div>
           </div>
         )}
         <div className="button-content">

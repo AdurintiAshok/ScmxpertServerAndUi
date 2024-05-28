@@ -199,7 +199,7 @@ const Signup = () => {
   return (
     <section
       class="h-100 gradient-form"
-      style={{  background: "#E4E9F7", overflow: "auto" }}
+      style={{  background: "#B5C18E", overflow: "auto" }}
     >
       <div class="container-fluid  h-100" style={{marginBottom:'30px',marginTop:'30px'}}>
         <div class="row d-flex justify-content-center align-items-center h-100">
@@ -276,10 +276,11 @@ const Signup = () => {
                         >
                           {showPassword ? "🫣" : "👁️"}
                         </span>
-                        {passwordError && (
+                       
+                      </div>
+                      {passwordError && (
                           <p style={{ color: "red", marginTop: "0.5rem" }}>{passwordError}</p>
                         )}
-                      </div>
                       <div class="form-outline mb-4">
                         <label class="form-label" for="form2Example22">
                           Confirm Password
@@ -301,10 +302,11 @@ const Signup = () => {
                         >
                           {confirmshowPassword ? "🫣" : "👁️"}
                         </span>
-                        {confirmPasswordError && (
+                      
+                      </div>
+                      {confirmPasswordError && (
                           <p style={{ color: "red" }}>{confirmPasswordError}</p>
                         )}
-                      </div>
                       <div className="d-flex justify-content-center">
                         <p>Are you ? </p>
                         <div className="form-check form-check-inline" style={{ marginLeft: '10px' }}>
@@ -364,7 +366,11 @@ const Signup = () => {
                         <button type="submit" className="btn btn-outline-primary btn-lg w-100 position-relative">
       {isLoading && (
         <div className="loader-container">
-          <div className="circular-loader"></div>
+                                             <div className="loaderforlogin">
+    <div className="dot"></div>
+    <div className="dot"></div>
+    <div className="dot"></div>
+  </div>
         </div>
       )}
       <div className="button-content">

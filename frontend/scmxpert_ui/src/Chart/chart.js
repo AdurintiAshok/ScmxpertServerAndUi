@@ -11,6 +11,7 @@ const ChartComponent = () => {
   const [allUsers,setAllUsers]=useState([]);
   const [userData,setUserData]=useState({});
   const [shipments,setShipMents]=useState([]);
+  const [loader,setLoader]=useState(false)
   const filteredUsers = allUsers?.filter(user => user.role === 'User');
   const navigate=useNavigate();
   const MAX_USERS=100;
@@ -37,6 +38,12 @@ useEffect(()=>{
       }
       const data = await response.json();
       setShipMents(data)
+      if(data.length==0){
+        setLoader(true)
+      }
+      else{
+        setLoader(false)
+      }
       console.log('ShipmentsFrom Data:', data);
       return data; // Return the fetched data if needed
     } catch (error) {
@@ -136,9 +143,18 @@ useEffect(()=>{
   </div>
 
 ) : (
-  <div className="loader-container">
-  <div className="circular-loader"></div>
+  !loader ?
+  (
+   <div className="loader-container">
+   <div className="loaderforstream">
+<div className="dot"></div>
+<div className="dot"></div>
+<div className="dot"></div>
 </div>
+</div>
+  ) :(  <div className="loader-container">
+<p>Something Went Wrong Please Login Again</p>
+  </div>)
 )}
 </div>
 </div>

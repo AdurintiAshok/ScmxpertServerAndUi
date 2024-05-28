@@ -29,14 +29,16 @@ const PasswordResetForm = () => {
         body: JSON.stringify({ newPassword }),
       });
       const message=await response.text();
-      console.log(message)
+    
+      setError(message)
       if (response.ok) {
+        alert("PassWord Updated Successfully")
         setSuccess(true);
         setError('');
         setIsLoading(false);
         navigate('/login')
       } else {
-        setError('Failed to reset password');
+        setError(message);
         setSuccess(false);
         setIsLoading(false);
       }
@@ -49,7 +51,7 @@ const PasswordResetForm = () => {
 
 
   return (
-    <div style={{ overflowX: "hidden", background: "#E4E9F7", height: "100%" }}>
+    <div style={{ overflowX: "hidden", background: "#B5C18E", height: "100%" }}>
     <section class=" p-3 p-md-4 p-xl-5 ">
       <div class="container">
         <div class="row justify-content-center">
@@ -71,6 +73,7 @@ const PasswordResetForm = () => {
                               </a>
                             </div>
                             <h2 class="h4 text-center">Update Password</h2>
+                         
                             {/* <h3 class="fs-6 fw-normal text-secondary text-center m-0">Update the password you want.</h3> */}
                           </div>
                         </div>
@@ -104,6 +107,7 @@ setConfirmNewPassword(e.target.value)
         </div>
       </button>
                             </div>
+                            <p class="text-center mt-4" style={{color:'red'}}>{error}</p>
                           </div>
                         </div>
                       </form>

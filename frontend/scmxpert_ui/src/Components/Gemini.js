@@ -7,6 +7,7 @@ import { CiChat1 } from 'react-icons/ci';
 import Sidebar from './Sidebar';
 import { KeyData } from '../ENDPOINTS/EndPoint';
 import { FaArrowCircleRight } from "react-icons/fa";
+import { GiArtificialHive } from "react-icons/gi";
 function Gemini() {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -23,26 +24,38 @@ function Gemini() {
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
-  useEffect(() => {
-    generateTitle(title);
-  }, [])
-  const generateTitle = React.useCallback(async (title) => {
+  const generateTitle = async (title) => {
     if (title) {
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-      const result = await model.generateContent(`Generate a concise title for ${title} in 10 characters. If the title is empty, label it as 'Untitled'.`);
-      const response = result.response;
+      // const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      // const result = await model.generateContent(`Generate a concise title for ${title} in 10 characters. If the title is empty, label it as 'Untitled'.`);
+      // const response = result.response;
+      // const text = response.text();
+      // setTitle(text)
+      try {
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+       const result = await model.generateContent(`Generate a concise title for ${title} in 10 characters. If the title is empty, label it as 'Untitled'.`);
+       const response = result.response;
       const text = response.text();
       setTitle(text)
+      }
+      catch (error) {
+    console.log("something went wrong")
+        setLoader(false)
+      }
     }
     else {
+      alert("I am ")
       setTitle('Untitled')
 
     }
-  }, []); // Assuming generateTitle doesn't have any dependencies
-  // Define the function to handle clicks on suggested questions
+  
+  }
   useEffect(() => {
-    generateTitle()
+   
+    generateTitle(title);
+  
   }, [])
+
   const handleSuggestedQuestionClick = (question) => {
     setInputValue(question); // Set the clicked question as the input value
   };
@@ -68,7 +81,7 @@ function Gemini() {
       try {
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
         console.log("Model",genAI)
-        const result = await model.generateContent(`${prompt} and tell answer in 40 words only`);
+        const result = await model.generateContent(`${prompt}`);
 
         const response =  result.response;
         const text =  response.text();
@@ -147,13 +160,21 @@ function Gemini() {
 </select>
 
 
-          {messages.map((message, index) => (
-            <div key={index} className={`message ${message.sender === 'user' ? 'user' : 'bot'}`}>
-            
-              <div className={`message ${message.sender === 'user' ? 'user' : 'bot'}`} >{message.timestamp}</div>
-              <div className="message-text">{message.text}</div>
-            </div>
-          ))}
+{messages.map((message, index) => (
+          <div key={index} className={`message ${message.sender === 'user' ? 'user' : 'bot'}`}>
+            <div className={`message ${message.sender === 'user' ? 'user' : 'bot'}`}>{message.timestamp}</div>
+        
+            <div className="message-text">{message.text}</div>
+          </div>
+        ))}
+{loader && (
+          <div className="loaderforgemini">
+            <div className="dot"></div>
+            <div className="dot"></div>
+            <div className="dot"></div>
+          </div>
+        )} {/* Loader element */}
+     
         </div>
         {showModal && (
         <div

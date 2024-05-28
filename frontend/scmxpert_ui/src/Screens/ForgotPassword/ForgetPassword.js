@@ -55,6 +55,7 @@ const ForgetPassword = (params) => {
    
       console.log(response)
       const data = await response.text();
+      alert(data)
       setIsLoading(false)
       navigate('/login')
     } catch (error) {
@@ -68,7 +69,7 @@ const ForgetPassword = (params) => {
 
 <section
       class="h-100 gradient-form"
-      style={{ backgroundColor: "#eee;" }}
+      style={{ backgroundColor: "#B5C18E" }}
     >
       <div class="container py-3 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">

@@ -14,13 +14,13 @@ import PasswordResetForm from '../Screens/PasswordUpdate/PasswordResetForm';
 import ChartComponent from '../Chart/chart';
 import Gemini from '../Components/Gemini';
 import GeminiInReact from '../About/About';
-
+import Load from '../Screens/Loader/Load';
 const RouteFolder = () => {
 
 
   // Define protected routes
   const routes = [
-    { path: '/', element: <Navigate to="/login" /> },
+    { path: '/', element: <Load/>},
     { path: '/login', element: <Login /> },
     { path: '/forgotpassword', element: <ForgetPassword /> },
     { path: '/about', element: <GeminiInReact /> },
