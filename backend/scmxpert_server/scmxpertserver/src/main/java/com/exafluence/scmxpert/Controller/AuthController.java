@@ -6,7 +6,7 @@ import com.exafluence.scmxpert.Respository.UserRepository;
 import com.exafluence.scmxpert.Service.TokenBlacklistService;
 import com.exafluence.scmxpert.Service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -26,6 +26,7 @@ public class AuthController {
 
     @Autowired
     RegistrationRepo poster;
+    @Value("${application.swagger.url}")
     private String swaggerUrl;
     @Autowired
     private LoginService loginService;
@@ -35,15 +36,12 @@ public class AuthController {
     private UserRepository loginRepo;
     @Autowired
     private TokenService service;
-@Autowired
-private  Environment environment;
     public  String userName;
     @Autowired
     private TokenBlacklistService tokenBlacklistService;
     @Hidden
     @RequestMapping(value = "/")
     public void redirect(HttpServletResponse response) throws IOException {
-        this.swaggerUrl=environment.getProperty("SWAGGER_URL");
         response.sendRedirect(swaggerUrl);
     }
 
@@ -113,9 +111,8 @@ private  Environment environment;
         try {
             return service.decrypt(authHeader);
         } catch (Exception e) {
-            // Log the exception or handle it as needed
-            e.printStackTrace(); // This prints the stack trace to the console
-            return false; // Return a default value or handle the error condition
+            e.printStackTrace();
+            return false;
         }
     }
 

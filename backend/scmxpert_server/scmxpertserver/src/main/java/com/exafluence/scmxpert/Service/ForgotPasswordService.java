@@ -8,7 +8,6 @@ import com.exafluence.scmxpert.Respository.RegistrationRepo;
 import com.exafluence.scmxpert.Respository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,8 +18,8 @@ import java.util.UUID;
 
 @Service
 public class ForgotPasswordService {
-    @Autowired
-    public Environment environment;
+    @Value("${application.reset.password.url}")
+    private String forgotPasswordUrl;
     @Autowired
     private JavaMailSender mailSender;
 
@@ -33,7 +32,7 @@ public class ForgotPasswordService {
     private String resetPasswordUrl;
     public boolean resetPassword(String email) {
         try {
-            String resetPasswordUrl = environment.getProperty("APPLICATION_RESET_PASSWORD_URL");
+            String resetPasswordUrl = forgotPasswordUrl;
             RegistrationModel user = registrationRepo.findByUserEmail(email);
             if (user != null) {
                 String token = UUID.randomUUID().toString();
@@ -59,7 +58,7 @@ public class ForgotPasswordService {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(email);
             mailMessage.setSubject("Reset Password");
-            mailMessage.setText("To Reset Your Password Please Click on This Following link. This link is only available for the next 5 minutes: " + resetPasswordLink);
+            mailMessage.setText("To reset your password, please click on the following link. This link will be available for the next 5 minutes: " + resetPasswordLink);
             mailSender.send(mailMessage);
         } catch (MailException e) {
             e.printStackTrace();

@@ -25,7 +25,7 @@ public class ChangePasswordController {
 
     @Autowired
     private ChangePasswordRepo changePasswordRepo;
-
+@CrossOrigin
     @PostMapping("/reset-password")
     public ResponseEntity<Object> resetPassword(@RequestParam("token") String token, @RequestBody ChangePasswordModel request) {
         try {
