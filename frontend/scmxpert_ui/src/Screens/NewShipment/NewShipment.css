@@ -18,7 +18,12 @@
     color: aliceblue;
     font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
-
+.statusmessage {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* This property centers items along the vertical axis */
+    height: 100vh; /* Make sure the container has enough height */
+  }
 .nav-links {
     height: 100%;
     padding-top: 30px;

@@ -23,7 +23,7 @@ const DataStream = () => {
       console.log("dataPass", dataPass)
       const token = localStorage.getItem('TokenValue')
       try {
-        const response = await fetch('http://localhost:8080/streamdata',
+        const response = await fetch(`${KeyData.api_end_point}/streamdata`,
           {
             method: 'GET',
             headers: {

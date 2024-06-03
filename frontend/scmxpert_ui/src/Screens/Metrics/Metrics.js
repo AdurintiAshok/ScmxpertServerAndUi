@@ -26,7 +26,7 @@ const navigate=useNavigate();
     const token= localStorage.getItem('TokenValue');
     console.log(token)
     try {
-      const response = await fetch(`${KeyData.api_end_point}/profile`, {
+      const response = await fetch(`${KeyData.api_end_point}/validate-token`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`

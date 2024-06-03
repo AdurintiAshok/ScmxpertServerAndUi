@@ -4,6 +4,7 @@ import ExfLogo from '../../assets/Exf.jpeg'
 import user from '../../assets/transport.jpg'
 import './PasswordResetForm.css'
 import { KeyData } from '../../ENDPOINTS/EndPoint';
+import  SCMLOG from "../../assets/scm.jpg"
 const PasswordResetForm = () => {
     const navigate=useNavigate();
   const [newPassword, setNewPassword] = useState('');
@@ -16,6 +17,7 @@ const PasswordResetForm = () => {
     setIsLoading(true);
     if(newPassword!==ConfirmnewPassword){
       alert("Password Is Not Matched with newPassword");
+      setIsLoading(false);
       return;
     }
 
@@ -69,7 +71,7 @@ const PasswordResetForm = () => {
                           <div class="mb-5">
                             <div class="text-center mb-4">
                               <a href="#!">
-                              <img src={ExfLogo} alt="Girl in a jacket" style={{width:"40px",height:"40px"}}/> <h3 style={{fontFamily:'Fantasy'}}>SCMXPertLite</h3>
+                              <img src={SCMLOG} alt="Girl in a jacket" style={{width:"40px",height:"40px"}}/> <h3 style={{fontFamily:'Fantasy'}}>SCMXPertLite</h3>
                               </a>
                             </div>
                             <h2 class="h4 text-center">Update Password</h2>

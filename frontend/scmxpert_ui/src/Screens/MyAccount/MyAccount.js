@@ -15,73 +15,70 @@ const MyAccount = () => {
   const [allUsers,setAllUsers]=useState([]);
   const [userData,setUserData]=useState([])
 const navigate=useNavigate();
+async function getAllUsers(){
+  const token=localStorage.getItem('TokenValue')
+  try {
+    const response = await fetch(`${KeyData.api_end_point}/getUserByEmail`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+        // Replace yourAuthToken with the actual authentication token
+      },
+      mode: 'cors'
+    });
+    if(response.status==200){
+      const data = await response.json();
+      console.log("allUsers",data)
+      // setAllUsers(data);
+      // filterUsers(data);
+      setUserData(data)
+    }
+  } catch (error) {
+    console.error('Error checking token validity:', error);
+  }
+}
   useEffect(()=>{
-    async function getAllUsers(){
-      const token=localStorage.getItem('TokenValue')
-      try {
-        const response = await fetch(`${KeyData.api_end_point}/users`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`
-            // Replace yourAuthToken with the actual authentication token
-          }
-        });
-        if(response.status==200){
-          const data = await response.json();
-          console.log("allUsers",data)
-          setAllUsers(data);
-          filterUsers(data);
-        }
-      } catch (error) {
-        console.error('Error checking token validity:', error);
-      }
-    }
-    async function filterUsers(allUsers){
-      const userEmail= localStorage.getItem('UserName');
-      console.log(userEmail)
-      const matchedUser = allUsers.find(user => user.userEmail === userEmail);
-      console.log("macthed",allUsers)
-      setUserData(matchedUser)
-      
-    }
+   
+
     const isAuthenticated =AuthFunction();
     if (!isAuthenticated) {
       navigate('/login');
     } else {
-      getAllUsers();
+   
       checkTokenValidity();
     }
   
   },[]);
   const checkTokenValidity = async () => {
-    const token= localStorage.getItem('TokenValue');
-    console.log("Hey TOk",token)
+    const token = localStorage.getItem('TokenValue');
     try {
       const response = await fetch(`${KeyData.api_end_point}/validate-token`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`
-          // Replace yourAuthToken with the actual authentication token
-        }
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        mode: 'cors' // Ensures requests include CORS headers
       });
       const data = await response.json();
-      console.log(data)
-      if (!data) {
+  
+      if (!data || response.status !== 200) {
         // Token is expired or not validated
-        // Perform logout action
         console.log("Token is expired or not validated. Logging out...");
         toast.error("Token Has Expired Logging Out.........", { toastId: 'success1' });
-
-        // Set timeout to navigate to login page after 3 seconds
+  
         const timeoutId = setTimeout(() => {
           navigate('/login');
         }, 3000); // Timeout in milliseconds (3 seconds)
-
+      }
+      else {
+        getAllUsers();
       }
     } catch (error) {
       console.error('Error checking token validity:', error);
     }
   };
+  
   return (
     <div style={{overflowX:'hidden',background:'#E4E9F7',height:'100%'}}>
           <ToastContainer/>

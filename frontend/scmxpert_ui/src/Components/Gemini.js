@@ -8,12 +8,44 @@ import Sidebar from './Sidebar';
 import { KeyData } from '../ENDPOINTS/EndPoint';
 import { FaArrowCircleRight } from "react-icons/fa";
 import { GiArtificialHive } from "react-icons/gi";
+import AuthFunction from "../Auth/Auth";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 function Gemini() {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [title, setTitle] = useState('Untitled');
   const [loader,setLoader]=useState(false)
+  const navigate = useNavigate();
+  React.useEffect(() => {
+    checkTokenValidity();
+  }, [])
+  const checkTokenValidity = async () => {
+    const token = localStorage.getItem('TokenValue');
+    console.log(token)
+    try {
+      const response = await fetch(`${KeyData.api_end_point}/validate-token`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+          // Replace yourAuthToken with the actual authentication token
+        }
+      });
+      const status = await response.json();
+      console.log(status+"i am calling")
+      if (!status) {
 
+        console.log("Token is expired or not validated. Logging out...");
+        toast.error("Token Has Expired Logging Out.........", { toastId: 'success1' });
+        const timeoutId = setTimeout(() => {
+          navigate('/login');
+        }, 3000); // Timeout in milliseconds (3 seconds)
+
+      }
+    } catch (error) {
+      console.error('Error checking token validity:', error);
+    }
+  };
   const questions = {
     q1: 'What is SCMXpert?',
     q2: 'What Problems SCMXpert Solves?'
@@ -242,22 +274,19 @@ function Gemini() {
             )}
           </div>
 
-          {messages.length === 0 ? (
-  <div className="suggested-questions" style={{ position: 'fixed', bottom: 50, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-    <div className='row d-flex justify-content-center align-items-center'>
-      <div className='col-sm-6'>
-        <ul className="suggested-list" style={{ listStyle: 'none', padding: 20 }}>
-          <li className="suggested-item"  onClick={() => handleSendMessage("What is SCMXpert?")}>What is SCMXpert?</li>
-        </ul>
-      </div>
-      <div className='col-sm-6'>
-        <ul className="suggested-list" style={{ listStyle: 'none', padding: 20 }}>
-          <li className="suggested-item"  onClick={() => handleSendMessage("What challenges does SCMXpert solve?")}>
-What challenges does SCMXpert solve?</li>
-        </ul>
-      </div>
+          {messages.length === 0 && !inputValue ? (
+            <div className="suggested-questions" style={{ position: 'fixed', bottom: 50, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+  <div className='row d-flex justify-content-center align-items-center'>
+    <div className='col'>
+      <ul className="suggested-list" style={{ listStyle: 'none', padding: 20, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <li className="suggested-item" onClick={() => handleSendMessage("What is SCMXpert?")}>What is SCMXpert?</li>
+        <li className="suggested-item" onClick={() => handleSendMessage("What challenges does SCMXpert solve?")}>What challenges does SCMXpert solve?</li>
+      </ul>
     </div>
   </div>
+</div>
+
+
 ) : null}
 
 

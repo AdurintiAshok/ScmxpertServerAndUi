@@ -83,6 +83,18 @@ margin-top: 13px;
   /* Adjust the width as needed */
 
 }
+.statusmessage {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* This property centers items along the vertical axis */
+  height: 100vh; /* Make sure the container has enough height */
+}
+
+@media (max-width: 767px) {
+  .chat-input {
+    width: 90%;  /* Increase width to 90% for mobile devices */
+  }
+}
 .form-select {
   margin-left: auto;
   margin-right: auto;
@@ -100,7 +112,6 @@ margin-top: 13px;
   border-radius:10px;
   padding: 10px 12px;
   font-size: 14px;
-  outline: none;
 }
 
 .send-button {
@@ -165,6 +176,7 @@ margin-top: 13px;
  flex-direction: row;
   height: 40px;
   margin: px 0;
+
 }
 
 .loaderforgemini .dot {

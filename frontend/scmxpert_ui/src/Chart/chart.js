@@ -13,8 +13,9 @@ const ChartComponent = () => {
   const [shipments,setShipMents]=useState([]);
   const [loader,setLoader]=useState(false)
   const filteredUsers = allUsers?.filter(user => user.role === 'User');
+  const filteredAdmins=allUsers?.filter(user=>user.role==='Admin')
   const navigate=useNavigate();
-  const MAX_USERS=100;
+  const MAX_SHIPEMENT_COUNT=100;
 useEffect(()=>{
 
 
@@ -91,23 +92,23 @@ useEffect(()=>{
  
 },[userData.role])
    const shipmentss = [
-    ["Task", "Hours per Day"],
+    ["Shipments", "Shipments Count"],
     ["Created_Shipments",shipments.length],
-    ["Pending", MAX_USERS-shipments.length],
+    ["Pending",MAX_SHIPEMENT_COUNT-shipments.length],
   ];
   const users = [
-    ["Task", "Hours per Day"],
-    ["Current_Users",filteredUsers.length],
-    ["Pending" ,MAX_USERS-allUsers.length],
+    ["Users", "Users Count"],
+    ["Users",filteredUsers.length],
+    ["Admins" ,filteredAdmins.length],
 
   ];
    const optionsForShipments = {
-    title:"Shipment Activities",
+    title:"Number of Shipments",
     colors:['#DFD0B8','#153448']
   };
 
   const optionsForUsers = {
-    title:"Users Activities",
+    title:" Number of Users",
     colors: ['#F9B572','#99B080']
   };
  

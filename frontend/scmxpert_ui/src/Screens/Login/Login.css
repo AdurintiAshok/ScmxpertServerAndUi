@@ -44,7 +44,7 @@
         transform: translateY(-50%);
         cursor: pointer;
         display: flex;
-        justify-content: end;
+        justify-content: flex-end;
       }
       .loader-container {
         position: absolute;

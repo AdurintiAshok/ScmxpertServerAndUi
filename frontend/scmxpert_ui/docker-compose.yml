@@ -38,7 +38,7 @@ services:
     #   - /var/lib/kafka/data:/var/lib/kafka/data
 
   scmuifrontend:
-    image: frontend:v1
+    image: ashok001/frontend:v1
     ports:
       - "80:80"
     environment:
@@ -47,11 +47,11 @@ services:
       - REACT_APP_GEMINI_API_KEY=AIzaSyAiVlCW7sO6fRI48f8ClCICjfQE9M4WXSc
 
   socket:
-    image: socket:v1
+    image: ashok001/socket:v1
     ports:
       - "12345:12345"  # Ensure this port does not conflict with others
   producerandconsumer:
-    image: producerandcosumer:v1
+    image: ashok001/producerandconsumer:v1
     environment:
       - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
       - SOCKET_HOST=socket
@@ -65,7 +65,7 @@ services:
       - kafka
 
   scmbackend:
-    image: scmapibackend:v1
+    image: ashok001/scmapibackend:v1
     ports:
       - "8080:8080"
     environment:

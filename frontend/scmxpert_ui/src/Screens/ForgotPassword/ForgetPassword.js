@@ -3,6 +3,7 @@ import "../Login/Login.css";
 import { Button } from 'bootstrap';
 import ExfLogo from '../../assets/Exf.jpeg'
 import { useNavigate } from 'react-router-dom';
+import SCMLOGO from '../../assets/scm.jpg'
 import './ForgotPassword.css'
 import { KeyData } from '../../ENDPOINTS/EndPoint';
 const ForgetPassword = (params) => {
@@ -80,7 +81,7 @@ const ForgetPassword = (params) => {
                 <div class="col-lg-6">
     <div class="card-body p-md-5 mx-md-4">
       <div class="text-center">
-      <img src={ExfLogo} alt="Girl in a jacket" style={{width:"40px",height:"40px"}}/> <h3 style={{fontFamily:'Fantasy'}}>SCMXPertLite</h3>
+      <img src={SCMLOGO} alt="Girl in a jacket" style={{width:"40px",height:"40px"}}/> <h3 style={{fontFamily:'Fantasy'}}>SCMXPertLite</h3>
       </div>
       <form>
         <div class="form-outline mb-4">

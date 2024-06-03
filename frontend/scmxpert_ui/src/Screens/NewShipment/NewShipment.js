@@ -39,6 +39,13 @@ const NewShipment = () => {
   const [userNameError,setUserNameError]=useState('')
   const [allUsers,setAllUsers]=useState([]);
   const [userData,setUserData]=useState([])
+  const [errorMessage,setErrorMessage]=useState('')
+  const routes = [
+    { id: 'Hyderabad', name: 'Hyderabad' },
+    { id: 'Chennai', name: 'Chennai' },
+    { id: 'Mumbai', name: 'Mumbai' },
+    // Add more routes as needed
+  ];
   useEffect(()=>{
     async function getAllUsers(){
       const token=localStorage.getItem('TokenValue')
@@ -60,6 +67,9 @@ const NewShipment = () => {
         console.error('Error checking token validity:', error);
       }
     }
+
+
+
     async function filterUsers(allUsers){
       const userEmail= localStorage.getItem('UserName');
       console.log(userEmail)
@@ -68,21 +78,39 @@ const NewShipment = () => {
       setUserData(matchedUser)
       
     }
+
+  
     const isAuthenticated =AuthFunction();
   if (!isAuthenticated) {
     navigate('/login');
   } else {
     checkTokenValidity();
-    setUserNameToState();
-    getAllUsers();
+
   }
   },[])
- function setUserNameToState(){
-    const userEmail=localStorage.getItem('UserName');
-    console.log(userEmail);
-    setUserName(userEmail);
-  }
 
+  async function getAllUsers(){
+    const token=localStorage.getItem('TokenValue')
+    try {
+      const response = await fetch(`${KeyData.api_end_point}/getUserByEmail`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+          // Replace yourAuthToken with the actual authentication token
+        },
+        mode: 'cors'
+      });
+      if(response.status==200){
+        const data = await response.json();
+        console.log("allUsers",data)
+        // setAllUsers(data);
+        // filterUsers(data);
+        setUserData(data)
+      }
+    } catch (error) {
+      console.error('Error checking token validity:', error);
+    }
+  }
     const checkTokenValidity = async () => {
     const token= localStorage.getItem('TokenValue');
     console.log(token)
@@ -108,14 +136,24 @@ const NewShipment = () => {
         }, 3000); // Timeout in milliseconds (3 seconds)
 
       }
+      else{
+        getAllUsers();
+      }
     } catch (error) {
       console.error('Error checking token validity:', error);
     }
   };
+  const deviceIds = [
+    { id: '202348', label: '202348' },
+    { id: '302442', label: '302442' },
+    { id: '492849', label: '492849' },
+    // Add more device IDs as needed
+  ];
   const handleChange = (e) => {
     const { name, value } = e.target;
     switch (name) {
       case "shipmentNumber":
+        setErrorMessage('')
         setShipmentNumber(value);
         setShipmentNumberError(value.trim() ? '' : 'Shipment Number is required.');
         break;
@@ -177,6 +215,38 @@ const NewShipment = () => {
         break;
     }
   };
+  function clearState(){
+    setShipmentNumber("");
+    setContainerNumber("");
+    setRouteName("");
+    setDeviceId("");
+    setPoNumber("");
+    setNdcNumber("");
+    setSerialNumberOfGoods("");
+    setGoodsType("");
+    setExpectedDeliveryDate("");
+    setDeliveryNumber("");
+    setBatchId("");
+    setShipmentNumberError("");
+    setShipmentDescription("");
+    setContainerNumberError("");
+    setRouteNameError("");
+    setDeviceIdError("");
+    setPoNumberError("");
+    setNdcNumberError("");
+    setSerialNumberOfGoodsError("");
+    setGoodsTypeError("");
+    setExpectedDeliveryDateError("");
+    setDeliveryNumberError("");
+    setBatchIdError("");
+    setShipmentDescriptionError("");
+  }
+  const goodsTypes = [
+    { id: 'Medicine', name: 'Medicine' },
+    { id: 'Electronic Device', name: 'Electronic Device' },
+    { id: 'Cars', name: 'Cars' },
+    // Add more goods types as needed
+  ];
   const handleSubmit = async (event) => {
     event.preventDefault();
     setShipmentNumberError("");
@@ -266,8 +336,6 @@ const NewShipment = () => {
       return;
     }
     setIsLoading(true)
-   
-    const userEmail1 = userData.role === 'Admin' ? userEmail : userName;
     const formData = {
       shipmentNumber: shipmentNumber,
       containerNumber: containerNumber,
@@ -281,25 +349,27 @@ const NewShipment = () => {
       deliveryNumber: deliveryNumber,
       batchId: batchId,
       shipmentDescription: shipmentDescription,
-      userEmail: userEmail1
     };
     // Add other form data fields as needed
 
     try {
-      const response = await fetch('http://localhost:8080/new-shipment', {
+      const token= localStorage.getItem('TokenValue');
+      const response = await fetch(`${KeyData.api_end_point}/new-shipment`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json', 
+          'Authorization':`Bearer ${token}`
         },
         body: JSON.stringify(formData)
       });
-
+      if(response.status==409){
+        setErrorMessage('Shipment with this number Already Existed..')
+      }
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       if (response.ok) {
         const data = await response.text();
-
         setIsLoading(false)
         navigate('/myshipment')
         console.log('Success:', data);
@@ -319,6 +389,7 @@ const NewShipment = () => {
       <div className="newship">
         <div class="container">
           <h4 style={{ marginBottom: '30px' }}>Create Shipment</h4>
+          <p style={{color:'red'}}>{errorMessage}</p>
           <form onSubmit={handleSubmit}>
   <div class="row">
     <div class="col-sm">
@@ -361,12 +432,12 @@ const NewShipment = () => {
     
       <div class="form-group w-100 mb-3">
         <label for="sel1">Route Details*</label>
-        <select class="form-select" name="routeName" onChange={handleChange}>
-          <option selected>Select Route*</option>
-          <option value="Hyderabad">Hyderabad</option>
-          <option value="Chennai">Chennai</option>
-          <option value="Mumbai">Mumbai</option>
-        </select>
+        <select className="form-select" name="routeName" onChange={handleChange} value={routeName}>
+      <option value="">Select Route</option>
+      {routes.map((route) => (
+        <option key={route.id} value={route.id}>{route.name}</option>
+      ))}
+    </select>
         {routeNameError && (
           <p style={{ color: "red" }}>{routeNameError}</p>
         )}
@@ -374,12 +445,12 @@ const NewShipment = () => {
 
       <div class="form-group w-100 mb-3">
         <label for="sel1">Device*</label>
-        <select class="form-select" name="deviceId" onChange={handleChange}>
-          <option selected>Select Device Id</option>
-          <option value="202348">202348</option>
-          <option value="302442">302442</option>
-          <option value="492849">492849</option>
-        </select>
+        <select className="form-select" name="deviceId" onChange={handleChange} value={deviceId}>
+      <option value="">Select Device Id</option>
+      {deviceIds.map((device) => (
+        <option key={device.id} value={device.id}>{device.label}</option>
+      ))}
+    </select>
         {deviceIdError && (
           <p style={{ color: "red" }}>{deviceIdError}</p>
         )}
@@ -421,12 +492,12 @@ const NewShipment = () => {
 
       <div class="form-group w-100 mb-3">
         <label for="sel1">Goods Type*</label>
-        <select class="form-select" name="goodsType" onChange={handleChange}>
-          <option selected>Select Goods Type</option>
-          <option value="Medicine">Medicine</option>
-          <option value="Electronic Device">Electronic Device</option>
-          <option value="Cars">Cars</option>
-        </select>
+        <select className="form-select" name="goodsType" onChange={handleChange} value={goodsType}>
+      <option value="">Select Goods Type</option>
+      {goodsTypes.map((type) => (
+        <option key={type.id} value={type.id}>{type.name}</option>
+      ))}
+    </select>
         {goodsTypeError && (
           <p style={{ color: "red" }}>{goodsTypeError}</p>
         )}
@@ -443,7 +514,7 @@ const NewShipment = () => {
  
       <div class="form-group w-100 mb-3">
         <label for="exampleInputPassword1">Delivery Number*</label>
-        <input type="password" class="form-control" id="exampleInputPassword1" name="deliveryNumber" value={deliveryNumber} onChange={handleChange} placeholder="Delivery NUmber" />
+        <input type="number" class="form-control" id="exampleInputPassword1" name="deliveryNumber" value={deliveryNumber} onChange={handleChange} placeholder="Delivery NUmber" />
         {deliveryNumberError && (
           <p style={{ color: "red" }}>{deliveryNumberError}</p>
         )}
@@ -451,7 +522,7 @@ const NewShipment = () => {
  
       <div class="form-group w-100 mb-3">
         <label for="exampleInputPassword1">Batch Id*</label>
-        <input type="password" class="form-control" id="exampleInputPassword1" name="batchId" value={batchId} onChange={handleChange} placeholder="Batch Id" />
+        <input type="number" class="form-control" id="exampleInputPassword1" name="batchId" value={batchId} onChange={handleChange} placeholder="Batch Id" />
         {batchIdError && (
           <p style={{ color: "red" }}>{batchIdError}</p>
         )}
@@ -480,11 +551,12 @@ const NewShipment = () => {
         )}
         <div className="button-content">
           {!isLoading ? "Create Shipment" : ""}
+          
         </div>
       </button>
     </div>
     <div className="col-md-6 text-center mb-2">
-      <button type="button" className="btn btn-outline-success btn-lg w-100">
+      <button type="button" className="btn btn-outline-success btn-lg w-100" onClick={clearState}>
         Clear Details
       </button>
     </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Login.css";
 import { MdOutlineMailOutline } from "react-icons/md";
 import ExfLogo from "../../assets/Exf.jpeg";
+import  SCMLOG from "../../assets/scm.jpg"
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -91,7 +92,6 @@ const Login = () => {
           setErrorMessage(errorMessage);
         }
     } catch (error) {
-       
         setErrorMessage(error.message)
         setIsLoading(false);
         console.error('Network error:', error);
@@ -139,7 +139,7 @@ const Login = () => {
                   <div class="card-body p-md-5 mx-md-4">
                     <div class="text-center">
                       <img
-                        src={ExfLogo}
+                        src={SCMLOG}
                         alt="Girl in a jacket"
                         style={{ width: "40px", height: "40px" }}
                       />
@@ -167,6 +167,7 @@ const Login = () => {
                           placeholder="Email"
                           value={username}
                           onChange={handleUsernameChange}
+                          autoComplete="off"
                         />
                         {usernameError && (
                           <p style={{ color: "red", marginTop: "5px" }}>
@@ -192,6 +193,7 @@ const Login = () => {
                           placeholder="Password"
                           value={password}
                           onChange={handlePasswordChange}
+                          autoComplete="off"
                         />
            
                         <span
@@ -210,7 +212,7 @@ const Login = () => {
     )}
 
                       <div style={{marginTop:'12px',display:'flex',justifyContent:'center'}}>
-                       <ReCAPTCHA
+                       <ReCAPTCHA alt="Refresh"
                           sitekey={KeyData.google_api_key}
                           onChange={handleRecaptchaChange}
                         />

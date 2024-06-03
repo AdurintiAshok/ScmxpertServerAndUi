@@ -5,6 +5,8 @@ import ExfLogo from "../../assets/Exf.jpeg";
 import "./Signup.css";
 import { useNavigate } from "react-router-dom";
 import { KeyData } from "../../ENDPOINTS/EndPoint";
+import { toast } from "react-toastify";
+import  SCMLOG from "../../assets/scm.jpg"
 const Signup = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -44,7 +46,9 @@ const Signup = () => {
         setIsLoading(false);
         setEmail('');
         return;
-     
+      }
+      if(response.status==500){
+        toast.error("Something Went Wrong...Please Try Again After Sometime", { toastId: 'signup' });
       }
       if (!response.ok) {
         throw new Error('Failed to register');
@@ -211,7 +215,7 @@ const Signup = () => {
                   <div class="card-body p-md-5 mx-md-4">
                     <div class="text-center">
                       <img
-                        src={ExfLogo}
+                        src={SCMLOG}
                         alt="Girl in a jacket"
                         style={{ width: "40px", height: "40px" }}
                       />
