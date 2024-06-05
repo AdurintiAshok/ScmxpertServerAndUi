@@ -23,6 +23,8 @@ const Signup = () => {
   const [selectedRole, setSelectedRole] = useState('');
   const [selectedRoleError, setSelectedRoleError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [passKey, setPassKey] = useState("");
+  const [passKeyError,setPassKeyError]=useState('');
   const handleSubmit = async () => {
    
     setIsLoading(true)
@@ -96,7 +98,8 @@ const Signup = () => {
     setEmailError("");
     setPasswordError("");
     setConfirmPasswordError("");
-    setSelectedRoleError("")
+    setSelectedRoleError("");
+    setPassKeyError("");
     // Validate username
     if (!username.trim()) {
       setUsernameError("Username is required.");
@@ -137,11 +140,19 @@ const Signup = () => {
       setSelectedRoleError("Select The Role");
       return;
     }
+    else if(selectedRole=="Admin" && !passKey){
+      setPassKeyError("Please Enter Pass Key");
+      return;
+    }
     if (!isCheckboxAccepted) {
       alert("Please accept the terms and conditions.");
       return;
     }
-
+    if(selectedRole =="Admin" && passKey!==KeyData.adminpasskey){
+      alert(KeyData.adminpasskey)
+      setPassKeyError("Invalid PassKey");
+      return;
+    }
     if (
       !usernameError &&
       !emailError &&
@@ -192,12 +203,21 @@ const Signup = () => {
   const handleConfirmPasswordChange = (e) => {
     const value = e.target.value;
     setConfirmPassword(value);
-
     // Validate confirm password
     if (!value.trim()) {
       setConfirmPasswordError('Confirm Password is required.');
     } else {
       setConfirmPasswordError('');
+    }
+  };
+  const handlePassKeyChange = (e) => {
+    const value = e.target.value;
+    setPassKey(value);
+    // Validate confirm password
+    if (!value.trim()) {
+      setPassKeyError('PassKey  is required.');
+    } else {
+      setPassKeyError('');
     }
   };
   return (
@@ -311,6 +331,33 @@ const Signup = () => {
                       {confirmPasswordError && (
                           <p style={{ color: "red" }}>{confirmPasswordError}</p>
                         )}
+                     {selectedRole=="Admin" ? (    <div class="form-outline mb-4">
+                        <label class="form-label" for="form2Example22">
+                          Enter PassKey
+                        </label>
+                        <input
+                          type="text"
+                          id="form2Example22"
+                          class="form-control"
+                          placeholder="Enter PassKey"
+                          value={passKey}
+                          onChange={handlePassKeyChange}
+                        />
+                         {passKeyError&& (
+                          <p style={{ color: "red" }}>{passKeyError}</p>
+                        )}
+                        {/* <span
+                          onClick={() => {
+                            handleTogglePassword("confirmPassword");
+                          }}
+                        
+                          className={`eyeiconinsignup1 ${!passwordError ? 'firstClass' : 'secondClass'}`}
+                        >
+                          {confirmshowPassword ? "🫣" : "👁️"}
+                        </span> */}
+                      
+                      </div>):null}
+                     
                       <div className="d-flex justify-content-center">
                         <p>Are you ? </p>
                         <div className="form-check form-check-inline" style={{ marginLeft: '10px' }}>
