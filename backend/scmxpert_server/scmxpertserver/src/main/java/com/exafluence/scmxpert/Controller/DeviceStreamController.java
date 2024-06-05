@@ -21,10 +21,10 @@ public class DeviceStreamController {
     @Autowired
     private DeviceStreamRepo deviceStreamRepo;
     @Autowired
-    private TokenService service;
+    private TokenService tokenService;
     @Autowired
     private TokenBlacklistService tokenBlacklistService;
-    @CrossOrigin
+    @CrossOrigin({"*"})
     @GetMapping("/streamdata")
     public ResponseEntity<Object> getDeviceStream(@RequestHeader("Authorization") String token) {
         if (isValidToken(token) && !tokenBlacklistService.isBlacklisted(token)) {
@@ -51,7 +51,7 @@ public class DeviceStreamController {
         if (token != null && token.startsWith("Bearer ")) {
             try {
                 String tokenValue = token.substring(7);
-                return service.decrypt(tokenValue);
+                return tokenService.decrypt(tokenValue);
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;

@@ -6,15 +6,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class BlacklistedToken {
     @Id
     private String token;
-
     public BlacklistedToken(String token) {
         this.token = token;
     }
-
     public String getToken() {
         return token;
     }
-
     public void setToken(String token) {
         this.token = token;
     }

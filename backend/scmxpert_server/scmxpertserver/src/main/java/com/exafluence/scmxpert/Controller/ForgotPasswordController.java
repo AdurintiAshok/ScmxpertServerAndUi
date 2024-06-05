@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ForgotPasswordController {
     @Autowired
     private ForgotPasswordService forgotPasswordService;
-    @CrossOrigin
+    @CrossOrigin({"*"})
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordModel request) {
         try {

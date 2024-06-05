@@ -1,7 +1,11 @@
 package com.exafluence.scmxpert.Controller;
 import java.io.IOException;
+import java.util.List;
 
+import com.exafluence.scmxpert.Model.NewShipMent;
+import com.exafluence.scmxpert.Model.UserData;
 import com.exafluence.scmxpert.Respository.RegistrationRepo;
+import com.exafluence.scmxpert.Respository.UserRepo;
 import com.exafluence.scmxpert.Respository.UserRepository;
 import com.exafluence.scmxpert.Service.TokenBlacklistService;
 import com.exafluence.scmxpert.Service.TokenService;
@@ -16,36 +20,33 @@ import com.exafluence.scmxpert.Model.RegistrationModel;
 import com.exafluence.scmxpert.Service.LoginService;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import javax.naming.AuthenticationException;
-
-
 @RestController
 public class AuthController {
 
     @Autowired
-    RegistrationRepo poster;
+    RegistrationRepo registrationRepo;
     @Value("${application.swagger.url}")
     private String swaggerUrl;
     @Autowired
     private LoginService loginService;
     @Autowired
-    private RegistrationRepo userDataRetreiver;
+    private UserRepository userRepository;
     @Autowired
-    private UserRepository loginRepo;
+    private TokenService tokenService;
     @Autowired
-    private TokenService service;
-    public  String userName;
+    private UserRepo userRepo;
     @Autowired
     private TokenBlacklistService tokenBlacklistService;
+
     @Hidden
     @RequestMapping(value = "/")
     public void redirect(HttpServletResponse response) throws IOException {
         response.sendRedirect(swaggerUrl);
     }
 
-    @CrossOrigin
+    @CrossOrigin({"*"})
     @PostMapping("/register")
     public ResponseEntity<?> postData(@RequestBody RegistrationModel post) {
         try {
@@ -61,25 +62,32 @@ public class AuthController {
             if (post.getUserPassword() == null || post.getUserPassword().isEmpty()) {
                 return ResponseEntity.badRequest().body("Password is required");
             }
-
-            RegistrationModel existingPost = poster.findByUserEmail(post.getUserEmail());
+            RegistrationModel existingPost = registrationRepo.findByUserEmail(post.getUserEmail());
             if (existingPost != null) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
                         .body("Email already exists. Please provide a different email.");
             }
-
-            poster.save(post);
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            String encryptedPassword = passwordEncoder.encode(post.getUserPassword());
+            post.setUserPassword(encryptedPassword);
+            UserData userData=new UserData();
+            userData.setUserEmail(post.getUserEmail());
+            userData.setRole(post.getRole());
+            userData.setUserName(post.getUserName());
+            registrationRepo.save(post);
+            userRepo.save(userData);
             return ResponseEntity.ok().body("User Registered Successfully");
 
-        } catch (DataIntegrityViolationException e) {
-            return new ResponseEntity<>("An error occurred while processing the request", HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Unable to register user. This email is already in use.");
         }
+
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    @CrossOrigin
+    @CrossOrigin({"*"})
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginModel loginModelRequest) {
         try {
@@ -91,8 +99,8 @@ public class AuthController {
             }
             boolean isAuthenticated = loginService.authenticate(loginModelRequest.getuserEmail(), loginModelRequest.getUserPassword());
             if (isAuthenticated) {
-                LoginModel user = loginRepo.findByUserEmail(loginModelRequest.getuserEmail());
-                String name = service.encrypt(user);
+                LoginModel user = userRepository.findByUserEmail(loginModelRequest.getuserEmail());
+                String name = tokenService.encrypt(user);
                 return ResponseEntity.ok().body(name);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
@@ -109,14 +117,60 @@ public class AuthController {
 
     public boolean TestToken(String authHeader) {
         try {
-            return service.decrypt(authHeader);
+            return tokenService.decrypt(authHeader);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
+    public String getUserEmailFromResponse(ResponseEntity<?> userData) {
+        if (userData.getBody() instanceof LoginModel) {
+            LoginModel loginModel = (LoginModel) userData.getBody();
+            return loginModel.getuserEmail();
+        } else {
+            throw new IllegalArgumentException("Response body is not of type LoginModel");
+        }
+    }
 
-    @CrossOrigin
+    @CrossOrigin({"*"})
+    @GetMapping("/getUserByEmail")
+    public ResponseEntity<Object> getUsers(@RequestHeader("Authorization") String token) {
+        if (isValidToken(token) && !tokenBlacklistService.isBlacklisted(token) ) {
+
+            if (token != null && token.startsWith("Bearer ")) {
+                String tokenset = token.substring(7);
+                ResponseEntity<?> userData = tokenService.loadUserDataFromToken(tokenset);
+                String userEmail = getUserEmailFromResponse(userData);
+                try {
+                    UserData userDataWithEmail = userRepo.findByUserEmail(userEmail);
+                    return ResponseEntity.status(HttpStatus.OK).body(userDataWithEmail);
+                } catch (Exception e) {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create shipment.");
+                }
+            }
+            else{
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Token.");
+            }
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or Expired Token.");
+        }
+    }
+
+    private boolean isValidToken(String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            try {
+                String tokenValue = token.substring(7);
+                return tokenService.decrypt(tokenValue);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    @CrossOrigin({"*"})
     @GetMapping("/validate-token")
     public boolean ProfileData(@RequestHeader("Authorization") String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -132,8 +186,8 @@ public class AuthController {
         }
 
     }
-    @CrossOrigin
-    @PostMapping("/logout")
+    @CrossOrigin({"*"})
+    @PostMapping("/logoutFromApplication")
     public ResponseEntity<Object> logout(@RequestHeader("Authorization") String token) {
         try {
             if (token != null && token.startsWith("Bearer ")) {

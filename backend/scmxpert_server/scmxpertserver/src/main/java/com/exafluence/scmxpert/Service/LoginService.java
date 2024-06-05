@@ -3,6 +3,7 @@ package com.exafluence.scmxpert.Service;
 import com.exafluence.scmxpert.Model.LoginModel;
 import com.exafluence.scmxpert.Respository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -15,8 +16,10 @@ public class LoginService {
         try {
             LoginModel user = userRepository.findByUserEmail(email);
             if (user != null) {
-                String storedPassword = user.getUserPassword();
-                return Objects.equals(password, storedPassword);
+
+                return   new BCryptPasswordEncoder().matches(password, user.getUserPassword());
+//                String storedPassword = user.getUserPassword();
+//                return Objects.equals(password, storedPassword);
             } else {
                 return false;
             }
